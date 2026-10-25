@@ -70,3 +70,28 @@ def foc_delay(scale=1, seed=42):
             )
         ],
     )
+
+
+def charging(scale=1, seed=42):
+    from .benches import charge
+
+    a = charge(600, 1 / scale, 0.9)
+    return lines(
+        "cccv-charge",
+        {"duration_s": 600, "initial_soc": 0.9, "grid_efficiency": 0.94},
+        {"final_soc": float(a["soc"][-1]), "grid_wh": float(np.trapezoid(a["grid_w"], a["time_s"]) / 3600)},
+        a,
+        [
+            ("Charge trajectory", "time_s", [("soc", "SOC")], "Time (s)", "SOC"),
+            (
+                "Charge taper",
+                "time_s",
+                [("current_a", "Positive means discharge")],
+                "Time (s)",
+                "Current (A)",
+            ),
+            ("Voltage ceiling", "time_s", [("voltage_v", "Pack voltage")], "Time (s)", "Voltage (V)"),
+            ("Grid demand", "time_s", [("grid_w", "AC input incl auxiliary")], "Time (s)", "Power (W)"),
+        ],
+        ["Illustrative OCV and CC-CV setpoints; no manufacturer certification."],
+    )
