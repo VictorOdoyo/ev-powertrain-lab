@@ -36,3 +36,8 @@ def test_cold_charge_and_overheated_pack_do_not_force_battery_current():
 def test_battery_regen_backoff_remains_visible_as_actuator_limit():
     result = m.operating_point(-50, 300, [1, 0], 0.2)
     assert result["limited"]
+
+
+def test_motor_point_handles_high_speed_low_current_without_false_torque():
+    p = m.motor_point(100, 3000, 300, 100)
+    assert abs(p["torque_nm"]) < 1e-4 and p["limited"]

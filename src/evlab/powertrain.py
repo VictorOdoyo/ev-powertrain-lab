@@ -23,22 +23,30 @@ def motor_point(torque_request_nm, omega_m, dc_voltage_v, temperature_c=25.0, mo
     p = replace(p, current_limit_a=p.current_limit_a * fraction)
     maximum = analytic_capability(p)["maximum_nm"]
     command = float(np.clip(torque_request_nm, -maximum, maximum))
-    for _ in range(80):
+    try:
+        current = current_reference(command, omega_m, dc_voltage_v, p)
+    except ValueError:
         try:
-            current = current_reference(command, omega_m, dc_voltage_v, p)
-            break
+            current = current_reference(0.0, omega_m, dc_voltage_v, p)
         except ValueError:
-            command *= 0.85
-    else:
-        return {
-            "torque_nm": 0.0,
-            "current_dq_a": np.zeros(2),
-            "copper_w": 0.0,
-            "inverter_w": 0.0,
-            "ac_w": 0.0,
-            "dc_w": 0.0,
-            "limited": True,
-        }
+            return {
+                "torque_nm": 0.0,
+                "current_dq_a": np.zeros(2),
+                "copper_w": 0.0,
+                "inverter_w": 0.0,
+                "ac_w": 0.0,
+                "dc_w": 0.0,
+                "limited": True,
+            }
+        low, high = 0.0, 1.0
+        for _ in range(18):
+            middle = (low + high) / 2
+            try:
+                candidate = current_reference(command * middle, omega_m, dc_voltage_v, p)
+                low = middle
+                current = candidate
+            except ValueError:
+                high = middle
     delivered = float(torque(current, p))
     copper = 1.5 * p.resistance_ohm * float(current @ current)
     ac = delivered * omega_m + copper
