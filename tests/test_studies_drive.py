@@ -18,3 +18,9 @@ def test_highway_study_has_finite_energy():
 def test_hill_study_preserves_grade():
     r = m.hill()
     assert np.max(r["arrays"]["grade"]) > 0.06
+
+
+def test_friction_replay_rejects_motor_regeneration():
+    r = m.friction_only()
+    assert np.min(r["arrays"]["motor_torque_nm"]) >= -1e-7
+    assert np.max(r["arrays"]["friction_n"]) > 100
