@@ -54,3 +54,14 @@ def derate(temperature_c, onset_c=80.0, shutdown_c=110.0):
     if not np.isfinite(onset_c + shutdown_c) or onset_c >= shutdown_c:
         raise ValueError("ordered thermal limits required")
     return np.clip((shutdown_c - finite(temperature_c, real=True)) / (shutdown_c - onset_c), 0, 1)
+
+
+def coolant(flow_fraction, maximum_conductance_w_k=100.0, maximum_pump_w=300.0):
+    from .core import positive
+
+    if not np.isfinite(flow_fraction) or not 0 <= flow_fraction <= 1:
+        raise ValueError("flow fraction in [0,1] required")
+    return {
+        "conductance_w_k": positive(maximum_conductance_w_k) * flow_fraction**0.8,
+        "pump_w": positive(maximum_pump_w) * flow_fraction**3,
+    }

@@ -22,3 +22,9 @@ def test_coupled_thermal_step_conserves_energy_without_ambient():
 
 def test_thermal_derating_has_bounded_linear_transition():
     assert np.allclose(m.derate([60, 80, 95, 110, 120]), [1, 1, 0.5, 0, 0])
+
+
+def test_pump_affinity_is_not_confused_with_heat_transfer_scaling():
+    half = m.coolant(0.5)
+    assert half["pump_w"] == pytest.approx(37.5)
+    assert half["conductance_w_k"] > 50
