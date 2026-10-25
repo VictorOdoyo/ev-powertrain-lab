@@ -32,3 +32,10 @@ def test_steady_voltage_annuls_independent_dynamic_rhs():
 def test_instantaneous_motor_power_closes_with_saliency():
     p = m.power_balance([-70, 130], [40, 100], 400)
     assert abs(p["defect_w"]) < 1e-8
+
+
+def test_mechanical_balance_and_reverse_load():
+    p = m.PMSM()
+    speed = 100.0
+    a = m.mechanical_rhs(speed, 20, 5, p)
+    assert p.inertia_kg_m2 * speed * a + 5 * speed + p.friction_nm_s * speed**2 == pytest.approx(20 * speed)

@@ -81,3 +81,10 @@ def power_balance(current, voltage, omega_m, model=None):
         "conversion_w": shaft,
         "defect_w": electrical - copper - storage - shaft,
     }
+
+
+def mechanical_rhs(omega_m, electromagnetic_nm, load_nm, model=None):
+    p = PMSM() if model is None else model
+    if not np.all(np.isfinite([omega_m, electromagnetic_nm, load_nm])):
+        raise ValueError("finite mechanical inputs required")
+    return (electromagnetic_nm - load_nm - p.friction_nm_s * omega_m) / p.inertia_kg_m2
