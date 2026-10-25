@@ -70,3 +70,8 @@ def test_energy_integral_has_ocv_coulomb_derivative():
     h = 1e-5
     derivative = (m.available_energy_j(0.2, 0.7 + h, p) - m.available_energy_j(0.2, 0.7 - h, p)) / (2 * h)
     assert derivative == pytest.approx(p.capacity_c * m.ocv(0.7, model=p), rel=1e-8)
+
+
+def test_aging_model_counts_equal_charge_and_discharge_throughput():
+    assert m.aging_increment(100, 25, 3600)["equivalent_cycles"] == pytest.approx(1 / 3)
+    assert m.aging_increment(-100, 25, 3600) == m.aging_increment(100, 25, 3600)

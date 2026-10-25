@@ -155,3 +155,19 @@ def available_energy_j(soc_low, soc_high, model=None):
     if not 0 <= soc_low <= soc_high <= 1:
         raise ValueError("ordered SOC endpoints required")
     return p.capacity_c * quad(lambda z: float(ocv(z, model=p)), soc_low, soc_high, epsabs=1e-5)[0]
+
+
+def aging_increment(current_a, temperature_c, dt_s, capacity_ah=150.0, reference_cycles=2000.0):
+    from .core import positive
+
+    dt = positive(dt_s)
+    capacity = positive(capacity_ah)
+    cycles = positive(reference_cycles)
+    if not np.all(np.isfinite([current_a, temperature_c])):
+        raise ValueError("finite aging conditions required")
+    throughput = abs(current_a) * dt / (2 * capacity * 3600)
+    acceleration = np.exp(3000 * (1 / 298.15 - 1 / (temperature_c + 273.15)))
+    return {
+        "equivalent_cycles": throughput,
+        "illustrative_capacity_loss_fraction": 0.2 * throughput * acceleration / cycles,
+    }
