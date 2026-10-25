@@ -341,3 +341,50 @@ def energy_uncertainty(scale=1, seed=42):
         ],
         ["Backward prescribed-speed work envelope, not achieved drive or battery range prediction."],
     )
+
+
+def observer_gate(scale=1, seed=42):
+    from .battery import Pack, step, terminal_voltage
+    from .core import stream
+    from .estimation import BatteryEKF
+
+    p = Pack()
+    dt = 0.2 / scale
+    t = np.arange(0, 30 + dt / 2, dt)
+    state = np.array([0.8, 0.0])
+    observer = BatteryEKF(0.76, p)
+    rng = stream(seed, "observer-study")
+    a = {
+        "time_s": t,
+        "truth": np.zeros(len(t)),
+        "estimate": np.zeros(len(t)),
+        "innovation_v": np.zeros(len(t)),
+        "accepted": np.zeros(len(t), bool),
+    }
+    for k in range(len(t)):
+        current = 60 if t[k] < 15 else -20
+        state = step(state, current, dt, p)
+        voltage = (
+            terminal_voltage(*state, current, model=p) + rng.normal(0, 0.1) + (20 if 10 < t[k] < 11 else 0)
+        )
+        r = observer.update(voltage, current, dt)
+        a["truth"][k] = state[0]
+        a["estimate"][k] = observer.state[0]
+        a["innovation_v"][k] = r["innovation_v"]
+        a["accepted"][k] = r["accepted"]
+    return lines(
+        "observer-outlier-gate",
+        {"seed": seed, "outlier_v": 20, "gate_nis": 16},
+        {"rejected_samples": int(np.sum(~a["accepted"]))},
+        a,
+        [
+            (
+                "SOC with gated voltage correction",
+                "time_s",
+                [("truth", "Truth"), ("estimate", "EKF")],
+                "Time (s)",
+                "SOC",
+            ),
+            ("Measurement innovation", "time_s", [("innovation_v", "Residual")], "Time (s)", "Voltage (V)"),
+        ],
+    )

@@ -51,3 +51,9 @@ def test_modulation_study_matches_inverse_transform():
 def test_uncertainty_study_has_ordered_quantiles():
     r = m.energy_uncertainty()
     assert np.all(np.diff(r["summary"]["traction_interval_wh"]) > 0)
+
+
+def test_observer_study_rejects_large_voltage_outliers():
+    r = m.observer_gate()
+    a = r["arrays"]
+    assert not np.any(a["accepted"][(a["time_s"] > 10) & (a["time_s"] < 11)])
