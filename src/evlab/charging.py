@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def command(state, dt_s, temperature_c=25.0, model=None, maximum_a=200.0, target_cell_v=4.2):
     from scipy.optimize import brentq
 
@@ -33,3 +36,17 @@ def grid_power(battery_power_w, efficiency=0.94, auxiliary_w=100.0):
     if battery_power_w > 0:
         raise ValueError("charger expects nonpositive battery discharge power")
     return -battery_power_w / efficiency + positive(auxiliary_w, allow_zero=True)
+
+
+def thermal_current_limit(
+    temperature_c, rated_a=200.0, cold_stop_c=0.0, warm_c=15.0, hot_on_c=40.0, hot_stop_c=50.0
+):
+    from .core import positive
+
+    if not cold_stop_c < warm_c < hot_on_c < hot_stop_c:
+        raise ValueError("ordered charge-temperature envelope required")
+    if not np.isfinite(temperature_c):
+        raise ValueError("finite temperature required")
+    cold = np.clip((temperature_c - cold_stop_c) / (warm_c - cold_stop_c), 0, 1)
+    hot = np.clip((hot_stop_c - temperature_c) / (hot_stop_c - hot_on_c), 0, 1)
+    return float(positive(rated_a) * min(cold, hot))

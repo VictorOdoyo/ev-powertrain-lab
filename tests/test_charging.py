@@ -17,3 +17,9 @@ def test_cccv_command_respects_predicted_terminal_voltage_and_soc():
 
 def test_grid_charging_power_includes_losses_and_auxiliaries():
     assert m.grid_power(-9400) == pytest.approx(10100)
+
+
+def test_charger_blocks_subzero_and_hot_cells_and_derates_cold_pack():
+    assert m.thermal_current_limit(-5) == 0
+    assert m.thermal_current_limit(55) == 0
+    assert m.thermal_current_limit(7.5) == 100
