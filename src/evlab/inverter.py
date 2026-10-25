@@ -78,3 +78,12 @@ def losses(
         / positive(reference_current_a)
     )
     return {"conduction_w": conduction, "switching_w": switching, "total_w": conduction + switching}
+
+
+def dc_power(ac_power_w, loss_w):
+    from .core import finite
+
+    power, loss = np.broadcast_arrays(finite(ac_power_w, real=True), finite(loss_w, real=True))
+    if np.any(loss < 0):
+        raise ValueError("nonnegative converter loss required")
+    return power + loss

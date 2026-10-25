@@ -38,3 +38,8 @@ def test_switching_loss_doubles_with_frequency_and_is_not_signed_power():
     b = m.losses([0, -100], 400, 20000)
     assert b["switching_w"] == pytest.approx(2 * a["switching_w"])
     assert b["conduction_w"] == a["conduction_w"]
+
+
+def test_dc_power_balance_reduces_regenerative_recovery():
+    assert m.dc_power(-10000, 500) == -9500
+    assert m.dc_power(10000, 500) == 10500
