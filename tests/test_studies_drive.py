@@ -24,3 +24,8 @@ def test_friction_replay_rejects_motor_regeneration():
     r = m.friction_only()
     assert np.min(r["arrays"]["motor_torque_nm"]) >= -1e-7
     assert np.max(r["arrays"]["friction_n"]) > 100
+
+
+def test_full_pack_never_overcharges():
+    r = m.full_pack()
+    assert np.max(r["arrays"]["soc"]) <= 1

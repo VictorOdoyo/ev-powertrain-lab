@@ -93,3 +93,7 @@ def hill(scale=1, seed=42):
 
 def friction_only(scale=1, seed=42):
     return study("friction-braking", Config(dt_s=0.2 / scale, duration_s=40, regen=False, seed=seed))
+
+
+def full_pack(scale=1, seed=42):
+    return study("full-pack-braking", Config(dt_s=0.2 / scale, duration_s=40, initial_soc=0.9999, seed=seed))
