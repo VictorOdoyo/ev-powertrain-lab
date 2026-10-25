@@ -182,40 +182,47 @@ def torque_capability(model=None):
 
 
 def current_reference(torque_nm, omega_m, dc_voltage_v, model=None):
-    from scipy.optimize import minimize
+    """Enumerate exact current/voltage constraint intersections on the torque hyperbola."""
+    from numpy.polynomial import Polynomial as Poly
 
     from .core import positive
 
     p = PMSM() if model is None else model
     limit = positive(dc_voltage_v) / np.sqrt(3)
+    if not np.isfinite(torque_nm + omega_m):
+        raise ValueError("finite operating point required")
     guess = mtpa_stationary(torque_nm, p)
     if np.linalg.norm(steady_voltage(guess, omega_m, p)) <= limit:
         return guess
-    constraints = [
-        {"type": "eq", "fun": lambda i: float(torque(i, p) - torque_nm)},
-        {"type": "ineq", "fun": lambda i: p.current_limit_a**2 - float(i @ i)},
-        {
-            "type": "ineq",
-            "fun": lambda i: limit**2 - float(steady_voltage(i, omega_m, p) @ steady_voltage(i, omega_m, p)),
-        },
+    d = Poly([0, 1])
+    den = Poly([p.flux_wb, p.ld_h - p.lq_h])
+    q = torque_nm / (1.5 * p.pole_pairs)
+    we = omega_m * p.pole_pairs
+    vd = p.resistance_ohm * d * den - we * p.lq_h * q
+    vq = p.resistance_ohm * q + we * (p.ld_h * d + p.flux_wb) * den
+    polynomials = [
+        vd * vd + vq * vq - limit**2 * den * den,
+        (d * d - p.current_limit_a**2) * den * den + q * q,
+        d * den**3 - q * q * (p.ld_h - p.lq_h),
     ]
-    fit = minimize(
-        lambda i: float(i @ i),
-        guess,
-        method="SLSQP",
-        bounds=[(-p.current_limit_a, p.current_limit_a)] * 2,
-        constraints=constraints,
-        options={"ftol": 1e-9, "maxiter": 150},
-    )
-    i = fit.x
-    feasible = (
-        abs(torque(i, p) - torque_nm) < 1e-5
-        and np.linalg.norm(i) <= p.current_limit_a + 1e-5
+    candidates = [guess]
+    for poly in polynomials:
+        for root in poly.roots():
+            if abs(root.imag) < 1e-5 and abs(root.real) <= p.current_limit_a + 1e-6:
+                direct = float(root.real)
+                flux = den(direct)
+                if abs(flux) > 1e-10:
+                    candidates.append(np.array([direct, q / flux]))
+    feasible = [
+        i
+        for i in candidates
+        if np.linalg.norm(i) <= p.current_limit_a + 1e-5
         and np.linalg.norm(steady_voltage(i, omega_m, p)) <= limit + 1e-5
-    )
+        and abs(torque(i, p) - torque_nm) < 1e-5
+    ]
     if not feasible:
         raise ValueError("torque request infeasible under current and voltage limits")
-    return i
+    return min(feasible, key=lambda i: float(i @ i))
 
 
 def at_temperature(temperature_c, model=None, copper_alpha=0.00393, magnet_alpha=-0.001):

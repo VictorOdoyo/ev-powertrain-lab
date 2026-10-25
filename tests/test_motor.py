@@ -104,3 +104,28 @@ def test_analytic_current_circle_limit_matches_numerical_reference():
     a = m.analytic_capability()
     b = m.torque_capability()
     assert a["maximum_nm"] == pytest.approx(b["maximum_nm"], rel=1e-10)
+
+
+def test_field_weakening_polynomial_matches_independent_constrained_optimizer():
+    from scipy.optimize import minimize
+
+    p = m.PMSM()
+    target = 75.0
+    speed = 900.0
+    bus = 350.0
+    actual = m.current_reference(target, speed, bus, p)
+    fit = minimize(
+        lambda i: i @ i,
+        actual + np.array([0.2, 0.1]),
+        constraints=[
+            {"type": "eq", "fun": lambda i: float(m.torque(i, p) - target)},
+            {
+                "type": "ineq",
+                "fun": lambda i: (bus / np.sqrt(3)) ** 2 - np.sum(m.steady_voltage(i, speed, p) ** 2),
+            },
+            {"type": "ineq", "fun": lambda i: p.current_limit_a**2 - i @ i},
+        ],
+        method="SLSQP",
+        options={"ftol": 1e-8},
+    )
+    assert np.linalg.norm(actual - fit.x) < 1e-3
