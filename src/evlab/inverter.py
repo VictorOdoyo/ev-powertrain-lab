@@ -10,3 +10,18 @@ def limit_vector(voltage, dc_voltage_v, modulation=0.98):
     limit = positive(dc_voltage_v) * modulation / np.sqrt(3)
     scale = np.minimum(1, limit / np.maximum(np.linalg.norm(v, axis=-1), 1e-30))
     return v * scale[..., None]
+
+
+def svpwm(alpha_beta, dc_voltage_v):
+    from .core import positive
+    from .transforms import inverse_clarke
+
+    v = np.asarray(alpha_beta, float)
+    if v.shape != (2,):
+        raise ValueError("one alpha-beta command required")
+    dc = positive(dc_voltage_v)
+    phases = inverse_clarke(np.r_[v, 0])
+    if np.ptp(phases) > dc * (1 + 1e-12):
+        raise ValueError("command outside modulation hexagon")
+    offset = 0.5 - (phases.max() + phases.min()) / (2 * dc)
+    return phases / dc + offset

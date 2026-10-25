@@ -9,3 +9,12 @@ def test_vector_limit_preserves_direction_and_linear_modulation_bound():
     result = m.limit_vector(command, 400)
     assert np.linalg.norm(result) == pytest.approx(0.98 * 400 / np.sqrt(3))
     assert result[0] / result[1] == pytest.approx(0.75)
+
+
+def test_svpwm_reconstructs_command_and_preserves_duty_bounds():
+    from evlab.transforms import clarke
+
+    duty = m.svpwm([100, 50], 400)
+    phase = 400 * (duty - duty.mean())
+    assert np.allclose(clarke(phase)[:2], [100, 50])
+    assert np.all((duty >= 0) & (duty <= 1))
