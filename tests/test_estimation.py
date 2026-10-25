@@ -47,3 +47,7 @@ def test_relaxation_fit_estimates_unknown_offset_amplitude_and_tau():
     fit = m.fit_relaxation(t, 380 - 2 * np.exp(-(t - 5) / 30))
     assert fit["tau_s"] == pytest.approx(30, rel=1e-6)
     assert fit["residual_v"] < 1e-8
+
+
+def test_capacity_estimate_uses_coulomb_throughput_and_soc_excursion():
+    assert m.capacity_from_excursion([0, 3600], [30, 30], 0.8, 0.6) == pytest.approx(150)

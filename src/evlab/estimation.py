@@ -114,3 +114,16 @@ def fit_relaxation(time, voltage):
         "tau_s": float(np.exp(fit.x[2])),
         "residual_v": float(np.linalg.norm(fit.fun) / np.sqrt(len(t))),
     }
+
+
+def capacity_from_excursion(time, current_a, soc_start, soc_end):
+    from .core import integrate
+
+    difference = soc_start - soc_end
+    if not 0 <= soc_start <= 1 or not 0 <= soc_end <= 1 or abs(difference) < 0.05:
+        raise ValueError("at least five-percent valid SOC excursion required")
+    charge = float(integrate(time, current_a).real)
+    capacity = charge / (3600 * difference)
+    if capacity <= 0:
+        raise ValueError("inconsistent SOC and current signs")
+    return capacity
