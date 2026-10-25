@@ -1,0 +1,7 @@
+metric,value
+distance_m,607.199309342695
+final_soc,0.7973586139377388
+limited_fraction,0.029850746268656716
+maximum_bus_residual_v,9.992194463848136e-06
+net_battery_wh,146.93741703945082
+speed_rmse_m_s,0.31900641936855995

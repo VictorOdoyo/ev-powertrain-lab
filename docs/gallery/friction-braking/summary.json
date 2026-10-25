@@ -1,0 +1,8 @@
+{
+  "distance_m": 149.41649145707783,
+  "final_soc": 0.79845580329925,
+  "limited_fraction": 0.1044776119402985,
+  "maximum_bus_residual_v": 9.926043162522546e-06,
+  "net_battery_wh": 86.27387880899258,
+  "speed_rmse_m_s": 0.6516620132485701
+}
