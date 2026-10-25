@@ -39,7 +39,7 @@ def build(source, destination):
     lines = [
         "# Computed experiment gallery",
         "",
-        "Nineteen default studies computed from clean source revision "
+        "Twenty-four default studies computed from clean source revision "
         + "[`"
         + revision[:12]
         + "`](https://github.com/VictorOdoyo/ev-powertrain-lab/commit/"

@@ -5,6 +5,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 CASES = {
+    "battery-hysteresis": ["studies_extended", "hysteresis", "Standalone battery voltage memory"],
+    "online-resistance": [
+        "studies_extended",
+        "resistance_tracking",
+        "Excited online resistance identification",
+    ],
+    "tire-envelope": ["studies_extended", "tire_envelope", "Combined tire force envelope"],
+    "dc-precharge": ["studies_extended", "precharge", "Exact DC-link precharge energy"],
+    "pack-impedance": ["studies_extended", "impedance", "Broadband pack impedance identification"],
     "road-load-uncertainty": ["studies_bench", "energy_uncertainty", "Conditional road-load ensemble"],
     "observer-outlier-gate": ["studies_bench", "observer_gate", "Gated voltage outlier rejection"],
     "urban-drive": ["studies_drive", "urban", "Forward urban drive"],
