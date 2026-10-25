@@ -25,3 +25,15 @@ def svpwm(alpha_beta, dc_voltage_v):
         raise ValueError("command outside modulation hexagon")
     offset = 0.5 - (phases.max() + phases.min()) / (2 * dc)
     return phases / dc + offset
+
+
+def switching(time_s, duty, switch_hz=10000):
+    from .core import finite, positive
+
+    t = finite(time_s, real=True)
+    d = finite(duty, real=True)
+    if d.shape != (3,) or np.any((d < 0) | (d > 1)):
+        raise ValueError("three bounded duties required")
+    phase = (t * positive(switch_hz)) % 1
+    carrier = 1 - abs(2 * phase - 1)
+    return carrier[..., None] < d

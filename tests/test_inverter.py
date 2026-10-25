@@ -18,3 +18,9 @@ def test_svpwm_reconstructs_command_and_preserves_duty_bounds():
     phase = 400 * (duty - duty.mean())
     assert np.allclose(clarke(phase)[:2], [100, 50])
     assert np.all((duty >= 0) & (duty <= 1))
+
+
+def test_switching_average_matches_commanded_duty():
+    t = (np.arange(10000) + 0.5) / 1e8
+    duty = np.array([0.2, 0.5, 0.8])
+    assert np.allclose(np.mean(m.switching(t, duty), axis=0), duty, atol=2e-4)
