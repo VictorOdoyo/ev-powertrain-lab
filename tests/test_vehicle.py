@@ -33,3 +33,8 @@ def test_constant_speed_cycle_force_is_road_load():
     t = np.linspace(0, 10, 101)
     v = np.ones(101) * 20
     assert np.allclose(m.required_force(t, v), m.road_forces(20)["total_n"])
+
+
+def test_friction_brake_carries_full_demand_when_charge_is_blocked():
+    result = m.blend_brakes(3000, 0)
+    assert result["friction_n"] == 3000 and result["unmet_n"] == 0

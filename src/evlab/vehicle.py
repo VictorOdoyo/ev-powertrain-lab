@@ -71,3 +71,12 @@ def required_force(time, speed_m_s, grade=0.0, model=None):
         raise ValueError("aligned nonnegative cycle speed required")
     acceleration = np.gradient(v, t, edge_order=2 if len(t) > 2 else 1)
     return p.effective_mass * acceleration + road_forces(v, grade, model=p)["total_n"]
+
+
+def blend_brakes(request_n, regen_limit_n, friction_limit_n=15000.0):
+    from .core import positive
+
+    request = positive(request_n, allow_zero=True)
+    regen = min(request, positive(regen_limit_n, allow_zero=True))
+    friction = min(request - regen, positive(friction_limit_n, allow_zero=True))
+    return {"regen_n": regen, "friction_n": friction, "unmet_n": request - regen - friction}
