@@ -59,3 +59,15 @@ def wheel_force(torque_nm, speed_m_s, model=None):
     drive = torque * np.asarray(speed_m_s) >= 0
     force = torque * p.gear / p.wheel_radius_m
     return np.where(drive, force * p.gear_efficiency, force / p.gear_efficiency)
+
+
+def required_force(time, speed_m_s, grade=0.0, model=None):
+    from .core import finite, timebase
+
+    p = Vehicle() if model is None else model
+    t = timebase(time)
+    v = finite(speed_m_s, real=True, ndim=1)
+    if v.shape != t.shape or np.any(v < 0):
+        raise ValueError("aligned nonnegative cycle speed required")
+    acceleration = np.gradient(v, t, edge_order=2 if len(t) > 2 else 1)
+    return p.effective_mass * acceleration + road_forces(v, grade, model=p)["total_n"]

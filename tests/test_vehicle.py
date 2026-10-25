@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from evlab import vehicle as m
@@ -26,3 +27,9 @@ def test_regen_gear_loss_reduces_recovered_shaft_power():
 def test_bidirectional_driveline_roundtrip():
     for force in (-1000, 0, 1000):
         assert m.wheel_force(m.motor_torque(force, 20), 20) == pytest.approx(force)
+
+
+def test_constant_speed_cycle_force_is_road_load():
+    t = np.linspace(0, 10, 101)
+    v = np.ones(101) * 20
+    assert np.allclose(m.required_force(t, v), m.road_forces(20)["total_n"])
