@@ -92,3 +92,14 @@ def read_csv(path, label="imported"):
     if array.ndim != 2 or array.shape[1] != 3:
         raise ValueError("nonempty cycle required")
     return Cycle(array[:, 0], array[:, 1], array[:, 2], label)
+
+
+def dynamics(cycle):
+    acceleration = np.gradient(cycle.speed_m_s, cycle.time_s)
+    jerk = np.gradient(acceleration, cycle.time_s)
+    return {
+        "acceleration_m_s2": acceleration,
+        "jerk_m_s3": jerk,
+        "maximum_acceleration_m_s2": float(np.max(abs(acceleration))),
+        "rms_jerk_m_s3": float(np.sqrt(np.mean(jerk**2))),
+    }

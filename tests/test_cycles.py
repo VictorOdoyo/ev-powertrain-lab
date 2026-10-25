@@ -37,3 +37,10 @@ def test_cycle_csv_roundtrip_preserves_arrays_and_si_header(tmp_path):
     restored = m.read_csv(path)
     assert np.array_equal(original.speed_m_s, restored.speed_m_s)
     assert b"\r\n" not in path.read_bytes()
+
+
+def test_cycle_acceleration_and_jerk_match_constant_acceleration():
+    t = np.linspace(0, 10, 101)
+    result = m.dynamics(m.Cycle(t, 2 * t))
+    assert np.allclose(result["acceleration_m_s2"], 2)
+    assert result["rms_jerk_m_s3"] < 1e-10
