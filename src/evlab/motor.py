@@ -47,3 +47,20 @@ def electrical_rhs(current, voltage, omega_m, model=None):
             (v[1] - model.resistance_ohm * i[1] - we * (model.ld_h * i[0] + model.flux_wb)) / model.lq_h,
         ]
     )
+
+
+def steady_voltage(current, omega_m, model=None):
+    from .core import finite
+
+    p = PMSM() if model is None else model
+    i = finite(current, real=True)
+    if i.shape[-1] != 2:
+        raise ValueError("d-q current required")
+    we = p.pole_pairs * np.asarray(omega_m)
+    return np.stack(
+        (
+            p.resistance_ohm * i[..., 0] - we * p.lq_h * i[..., 1],
+            p.resistance_ohm * i[..., 1] + we * (p.ld_h * i[..., 0] + p.flux_wb),
+        ),
+        axis=-1,
+    )
