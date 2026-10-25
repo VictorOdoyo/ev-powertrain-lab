@@ -40,3 +40,14 @@ def fit_impedance(frequency_hz, impedance_ohm):
     fit = least_squares(residual, np.log([max(min(z.real), 1e-6), max(np.ptp(z.real), 1e-6), 1.0]))
     r0, r1, tau = np.exp(fit.x)
     return {"r0_ohm": r0, "r1_ohm": r1, "tau_s": tau, "rms_ohm": float(np.sqrt(np.mean(fit.fun**2)))}
+
+
+def hysteresis_step(value_v, current_a, dt_s, capacity_ah=150, amplitude_v=2, rate=20):
+    dt = positive(dt_s)
+    capacity = positive(capacity_ah)
+    amp = positive(amplitude_v)
+    gamma = positive(rate) * abs(current_a) / (3600 * capacity)
+    if not np.isfinite(value_v + current_a) or abs(value_v) > amp:
+        raise ValueError("bounded finite hysteresis state required")
+    target = -amp * np.sign(current_a)
+    return target + (value_v - target) * np.exp(-gamma * dt)

@@ -29,3 +29,9 @@ def test_impedance_fit_recovers_independent_synthetic_spectrum():
     assert r["r0_ohm"] == pytest.approx(0.05, rel=1e-5)
     assert r["r1_ohm"] == pytest.approx(0.03, rel=1e-5)
     assert r["tau_s"] == pytest.approx(25, rel=1e-5)
+
+
+def test_hysteresis_relaxes_with_throughput_and_freezes_at_rest():
+    assert m.hysteresis_step(1, 0, 100) == 1
+    assert -2 < m.hysteresis_step(0, 100, 100) < 0
+    assert m.hysteresis_step(0, -100, 100) > 0
