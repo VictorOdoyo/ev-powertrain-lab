@@ -35,3 +35,8 @@ def test_hysteresis_relaxes_with_throughput_and_freezes_at_rest():
     assert m.hysteresis_step(1, 0, 100) == 1
     assert -2 < m.hysteresis_step(0, 100, 100) < 0
     assert m.hysteresis_step(0, -100, 100) > 0
+
+
+def test_iron_loss_has_nonnegative_even_speed_symmetry():
+    assert m.iron_loss(0, 0.08) == 0
+    assert m.iron_loss(-100, 0.08) == m.iron_loss(100, 0.08) > 0

@@ -51,3 +51,16 @@ def hysteresis_step(value_v, current_a, dt_s, capacity_ah=150, amplitude_v=2, ra
         raise ValueError("bounded finite hysteresis state required")
     target = -amp * np.sign(current_a)
     return target + (value_v - target) * np.exp(-gamma * dt)
+
+
+def iron_loss(speed_rad_s, flux_wb, pole_pairs=4, hysteresis_coefficient=100, eddy_coefficient=1):
+    from .core import integer
+
+    integer(pole_pairs)
+    omega = finite(speed_rad_s, real=True)
+    flux = positive(flux_wb)
+    frequency = abs(omega) * pole_pairs / (2 * np.pi)
+    return (
+        positive(hysteresis_coefficient, allow_zero=True) * frequency * flux**2
+        + positive(eddy_coefficient, allow_zero=True) * frequency**2 * flux**2
+    )
