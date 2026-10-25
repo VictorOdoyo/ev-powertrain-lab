@@ -28,3 +28,32 @@ def current_gains(model, bandwidth_hz=500.0):
 
     omega = 2 * np.pi * positive(bandwidth_hz)
     return {"kp": omega * np.array([model.ld_h, model.lq_h]), "ki": omega * model.resistance_ohm}
+
+
+class CurrentLoop:
+    def __init__(self, model=None, bandwidth_hz=500.0, tracking_s=0.001):
+        from .core import positive
+        from .motor import PMSM
+
+        self.model = PMSM() if model is None else model
+        self.gains = current_gains(self.model, bandwidth_hz)
+        self.integral = np.zeros(2)
+        self.tracking = positive(tracking_s)
+
+    def update(self, reference, current, omega_m, dc_voltage_v, dt_s):
+        from .core import finite, positive
+        from .inverter import limit_vector
+
+        p = self.model
+        dt = positive(dt_s)
+        target = finite(reference, real=True)
+        measured = finite(current, real=True)
+        if target.shape != (2,) or measured.shape != (2,):
+            raise ValueError("d-q current vectors required")
+        error = target - measured
+        we = p.pole_pairs * omega_m
+        feed = np.array([-we * p.lq_h * measured[1], we * (p.ld_h * measured[0] + p.flux_wb)])
+        raw = self.gains["kp"] * error + self.integral + feed
+        applied = limit_vector(raw, dc_voltage_v)
+        self.integral += dt * (self.gains["ki"] * error + (applied - raw) / self.tracking)
+        return applied
