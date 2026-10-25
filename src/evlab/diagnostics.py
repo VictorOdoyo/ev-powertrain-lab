@@ -1,0 +1,32 @@
+import numpy as np
+
+
+def identify_motor(current, derivative, voltage, omega_m, pole_pairs=4):
+    from .core import finite, integer
+
+    i, di, v = [finite(x, real=True, ndim=2) for x in (current, derivative, voltage)]
+    speed = finite(omega_m, real=True, ndim=1)
+    integer(pole_pairs)
+    if i.shape != di.shape or i.shape != v.shape or i.shape != (len(speed), 2):
+        raise ValueError("aligned d-q records required")
+    we = speed * pole_pairs
+    d = np.column_stack((i[:, 0], di[:, 0], -we * i[:, 1], np.zeros(len(i))))
+    q = np.column_stack((i[:, 1], we * i[:, 0], di[:, 1], we))
+    design = np.vstack((d, q))
+    target = np.r_[v[:, 0], v[:, 1]]
+    scale = np.linalg.norm(design, axis=0)
+    if np.any(scale == 0) or np.linalg.matrix_rank(design / scale) < 4:
+        raise ValueError("motor parameters are unobservable without independent excitation")
+    normalized = design / scale
+    coefficient = np.linalg.lstsq(normalized, target, rcond=None)[0] / scale
+    if np.any(coefficient <= 0):
+        raise ValueError("fit produced nonphysical motor parameters")
+    residual = design @ coefficient - target
+    return {
+        "resistance_ohm": float(coefficient[0]),
+        "ld_h": float(coefficient[1]),
+        "lq_h": float(coefficient[2]),
+        "flux_wb": float(coefficient[3]),
+        "rms_residual_v": float(np.sqrt(np.mean(residual**2))),
+        "scaled_condition": float(np.linalg.cond(normalized)),
+    }

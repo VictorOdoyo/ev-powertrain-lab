@@ -1,0 +1,20 @@
+import numpy as np
+import pytest
+
+from evlab import diagnostics as m
+
+
+def test_identification_recovers_excited_motor_without_assuming_known_flux():
+    from evlab.motor import PMSM, steady_voltage
+
+    p = PMSM()
+    t = np.linspace(0, 1, 501)
+    current = np.column_stack((30 * np.sin(31 * t), 80 + 20 * np.cos(43 * t)))
+    derivative = np.column_stack((930 * np.cos(31 * t), -860 * np.sin(43 * t)))
+    speed = 250 + 50 * np.sin(6 * t)
+    voltage = steady_voltage(current, speed, p) + derivative * np.array([p.ld_h, p.lq_h])
+    result = m.identify_motor(current, derivative, voltage, speed)
+    assert result["resistance_ohm"] == pytest.approx(p.resistance_ohm)
+    assert result["ld_h"] == pytest.approx(p.ld_h)
+    assert result["lq_h"] == pytest.approx(p.lq_h)
+    assert result["flux_wb"] == pytest.approx(p.flux_wb)
