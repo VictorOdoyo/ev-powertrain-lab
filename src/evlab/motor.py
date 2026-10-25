@@ -64,3 +64,20 @@ def steady_voltage(current, omega_m, model=None):
         ),
         axis=-1,
     )
+
+
+def power_balance(current, voltage, omega_m, model=None):
+    p = PMSM() if model is None else model
+    i = np.asarray(current, float)
+    derivative = electrical_rhs(i, voltage, omega_m, p)
+    electrical = 1.5 * float(np.dot(current, voltage))
+    copper = 1.5 * p.resistance_ohm * float(i @ i)
+    storage = 1.5 * (p.ld_h * i[0] * derivative[0] + p.lq_h * i[1] * derivative[1])
+    shaft = float(torque(i, p) * omega_m)
+    return {
+        "electrical_w": electrical,
+        "copper_w": copper,
+        "storage_rate_w": storage,
+        "conversion_w": shaft,
+        "defect_w": electrical - copper - storage - shaft,
+    }

@@ -27,3 +27,8 @@ def test_steady_voltage_annuls_independent_dynamic_rhs():
     p = m.PMSM()
     i = np.array([-30.0, 80.0])
     assert np.allclose(m.electrical_rhs(i, m.steady_voltage(i, 300, p), 300, p), 0, atol=1e-10)
+
+
+def test_instantaneous_motor_power_closes_with_saliency():
+    p = m.power_balance([-70, 130], [40, 100], 400)
+    assert abs(p["defect_w"]) < 1e-8
