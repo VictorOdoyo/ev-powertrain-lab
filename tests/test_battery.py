@@ -80,3 +80,11 @@ def test_aging_model_counts_equal_charge_and_discharge_throughput():
 def test_charge_inefficiency_is_zero_on_discharge_and_closes_coulomb_loss_power():
     assert m.charge_inefficiency_heat(100, 0.5) == 0
     assert m.charge_inefficiency_heat(-100, 0.5) == pytest.approx(0.5 * m.ocv(0.5))
+
+
+@pytest.mark.parametrize("temperature", [-273.15, -300.0])
+def test_battery_thermodynamics_reject_absolute_zero(temperature):
+    with pytest.raises(ValueError):
+        m.ocv(0.5, temperature)
+    with pytest.raises(ValueError):
+        m.aging_increment(1, temperature, 1)

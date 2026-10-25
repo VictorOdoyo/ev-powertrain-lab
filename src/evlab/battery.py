@@ -54,6 +54,8 @@ def ocv(soc, temperature_c=25.0, model=None):
     p = Pack() if model is None else model
     z = finite(soc, real=True)
     t = finite(temperature_c, real=True)
+    if np.any(t <= -273.15):
+        raise ValueError("temperature must exceed absolute zero")
     if np.any((z < 0) | (z > 1)):
         raise ValueError("SOC outside [0,1]")
     return p.series * (3.1 + 1.0 * z + 0.06 * np.tanh(10 * (z - 0.5)) - 0.0002 * (t - 25))
@@ -165,6 +167,8 @@ def aging_increment(current_a, temperature_c, dt_s, capacity_ah=150.0, reference
     cycles = positive(reference_cycles)
     if not np.all(np.isfinite([current_a, temperature_c])):
         raise ValueError("finite aging conditions required")
+    if temperature_c <= -273.15:
+        raise ValueError("temperature must exceed absolute zero")
     throughput = abs(current_a) * dt / (2 * capacity * 3600)
     acceleration = np.exp(3000 * (1 / 298.15 - 1 / (temperature_c + 273.15)))
     return {
