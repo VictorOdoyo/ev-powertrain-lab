@@ -47,3 +47,26 @@ def foc(scale=1, seed=42):
             ),
         ],
     )
+
+
+def foc_delay(scale=1, seed=42):
+    from .benches import current_loop
+
+    a = current_loop(dt_s=0.00005 / scale)
+    b = current_loop(dt_s=0.00005 / scale, delay_samples=2 * scale)
+    data = {"time_s": a["time_s"], "ideal_a": a["current_dq_a"][:, 1], "delayed_a": b["current_dq_a"][:, 1]}
+    return lines(
+        "foc-delay",
+        {"transport_s": 0.0001},
+        {"delayed_final_error_a": float(abs(data["delayed_a"][-1] - 80))},
+        data,
+        [
+            (
+                "Command transport delay",
+                "time_s",
+                [("ideal_a", "No delay"), ("delayed_a", "100 us delay")],
+                "Time (s)",
+                "q current (A)",
+            )
+        ],
+    )
