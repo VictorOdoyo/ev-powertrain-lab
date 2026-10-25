@@ -55,3 +55,21 @@ def correct(prediction, voltage_v, current_a, temperature_c=25.0, model=None, vo
         "nis": nis,
         "accepted": bool(accepted),
     }
+
+
+class BatteryEKF:
+    def __init__(self, soc=0.6, model=None, voltage_std_v=0.2):
+        from .battery import Pack, ocv
+
+        self.model = Pack() if model is None else model
+        ocv(soc, model=self.model)
+        self.state = np.array([soc, 0.0])
+        self.covariance = np.diag([0.02**2, 1.0])
+        self.voltage_std = voltage_std_v
+
+    def update(self, voltage_v, current_a, dt_s, temperature_c=25.0):
+        prediction = predict(self.state, self.covariance, current_a, dt_s, self.model)
+        result = correct(prediction, voltage_v, current_a, temperature_c, self.model, self.voltage_std)
+        self.state = result["state"].copy()
+        self.covariance = result["covariance"].copy()
+        return result
