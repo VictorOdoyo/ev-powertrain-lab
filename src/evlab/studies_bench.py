@@ -299,3 +299,45 @@ def modulation(scale=1, seed=42):
             ),
         ],
     )
+
+
+def energy_uncertainty(scale=1, seed=42):
+    from dataclasses import replace
+
+    from .statistics import correlated_samples, interval, route_energy
+    from .vehicle import Vehicle
+
+    samples = correlated_samples([1800, 0.62, 0.01], np.diag([100**2, 0.05**2, 0.001**2]), 300 * scale, seed)
+    time = np.linspace(0, 60, 301)
+    speed = 20 * np.sin(np.pi * time / 60) ** 2
+    wh = np.array(
+        [
+            route_energy(time, speed, 0, replace(Vehicle(), mass_kg=x[0], drag_area_m2=x[1], rolling=x[2]))[
+                "traction_j"
+            ]
+            / 3600
+            for x in samples
+        ]
+    )
+    a = {
+        "sample": np.arange(len(wh)),
+        "traction_wh": wh,
+        "mass_kg": samples[:, 0],
+        "drag_area_m2": samples[:, 1],
+    }
+    return lines(
+        "road-load-uncertainty",
+        {"seed": seed, "samples": len(wh), "covariance": np.diag([100**2, 0.05**2, 0.001**2]).tolist()},
+        {"traction_interval_wh": interval(wh).tolist()},
+        a,
+        [
+            (
+                "Conditional road-load ensemble",
+                "sample",
+                [("traction_wh", "Positive wheel work")],
+                "Sample",
+                "Energy (Wh)",
+            )
+        ],
+        ["Backward prescribed-speed work envelope, not achieved drive or battery range prediction."],
+    )

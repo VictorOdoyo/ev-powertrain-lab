@@ -46,3 +46,8 @@ def test_thermal_study_conserves_heat():
 def test_modulation_study_matches_inverse_transform():
     r = m.modulation()
     assert r["summary"]["maximum_average_error_v"] < 1e-10
+
+
+def test_uncertainty_study_has_ordered_quantiles():
+    r = m.energy_uncertainty()
+    assert np.all(np.diff(r["summary"]["traction_interval_wh"]) > 0)
