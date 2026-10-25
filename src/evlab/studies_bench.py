@@ -216,3 +216,46 @@ def battery_pulse(scale=1, seed=42):
             ("Terminal response", "time_s", [("voltage_v", "Terminal")], "Time (s)", "Voltage (V)"),
         ],
     )
+
+
+def thermal_network(scale=1, seed=42):
+    from .thermal import network, network_step
+
+    cap = np.array([1000.0, 3000.0, 8000.0])
+    mat = network(cap, [(0, 1, 20), (1, 2, 10)], np.zeros(3))
+    t = np.linspace(0, 200, 101 * scale)
+    temp = np.array([100.0, 25.0, 25.0])
+    hist = [temp.copy()]
+    for dt in np.diff(t):
+        temp = network_step(temp, np.zeros(3), 25, dt, mat)
+        hist.append(temp.copy())
+    hist = np.array(hist)
+    a = {
+        "time_s": t,
+        "motor_c": hist[:, 0],
+        "coolant_c": hist[:, 1],
+        "sink_c": hist[:, 2],
+        "energy_j": hist @ cap,
+    }
+    return lines(
+        "thermal-network",
+        {"capacities_j_k": cap.tolist(), "edges_w_k": [20, 10]},
+        {"maximum_energy_drift_j": float(np.max(abs(a["energy_j"] - a["energy_j"][0])))},
+        a,
+        [
+            (
+                "Isolated heat redistribution",
+                "time_s",
+                [("motor_c", "Motor"), ("coolant_c", "Coolant"), ("sink_c", "Sink")],
+                "Time (s)",
+                "Temperature (deg C)",
+            ),
+            (
+                "Conservation audit",
+                "time_s",
+                [("energy_j", "Sum C T")],
+                "Time (s)",
+                "Stored thermal energy (J)",
+            ),
+        ],
+    )

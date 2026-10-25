@@ -36,3 +36,8 @@ def test_pulse_study_relaxes_after_current_removal():
     a = r["arrays"]
     assert a["polarization_v"][-1] < max(a["polarization_v"])
     assert a["soc"][-1] == pytest.approx(0.7 - 3000 / 540000)
+
+
+def test_thermal_study_conserves_heat():
+    r = m.thermal_network()
+    assert r["summary"]["maximum_energy_drift_j"] < 1e-5
