@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from evlab import studies_extended as m
@@ -21,3 +22,8 @@ def test_tire_envelope_reaches_zero_longitudinal_headroom():
 def test_resistance_tracking_study_recovers_truth():
     r = m.resistance_tracking()
     assert r["summary"]["final_resistance_ohm"] == pytest.approx(0.064, abs=0.0001)
+
+
+def test_hysteresis_reversal_stays_inside_declared_bounds():
+    r = m.hysteresis()
+    assert np.max(abs(r["arrays"]["hysteresis_v"])) <= 2

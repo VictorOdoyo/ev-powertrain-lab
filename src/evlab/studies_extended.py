@@ -123,3 +123,27 @@ def resistance_tracking(scale=1, seed=42):
         "Sample",
         "Resistance (ohm)",
     )
+
+
+def hysteresis(scale=1, seed=42):
+    from .electrical_analysis import hysteresis_step
+
+    t = np.linspace(0, 600, 601 * scale)
+    current = np.where(t < 300, 100.0, -100.0)
+    voltage = 0.0
+    history = [voltage]
+    for k, dt in enumerate(np.diff(t)):
+        voltage = hysteresis_step(voltage, current[k], dt)
+        history.append(voltage)
+    a = {"time_s": t, "hysteresis_v": history, "current_a": current}
+    return output(
+        "battery-hysteresis",
+        {"amplitude_v": 2, "rate": 20, "capacity_ah": 150},
+        {"final_hysteresis_v": voltage},
+        a,
+        "Throughput-driven voltage memory",
+        "time_s",
+        [("hysteresis_v", "Hysteresis")],
+        "Time (s)",
+        "Voltage (V)",
+    )
