@@ -20,3 +20,8 @@ def test_ocv_jacobian_matches_central_difference():
     z = 0.45
     h = 1e-6
     assert m.ocv_jacobian(z) == pytest.approx((m.ocv(z + h) - m.ocv(z - h)) / (2 * h), rel=1e-8)
+
+
+def test_battery_discharge_reduces_and_charge_raises_terminal_voltage():
+    assert m.terminal_voltage(0.7, 0, 100) < m.ocv(0.7)
+    assert m.terminal_voltage(0.7, 0, -100) > m.ocv(0.7)

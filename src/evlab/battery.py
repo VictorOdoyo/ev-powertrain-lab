@@ -63,3 +63,12 @@ def ocv_jacobian(soc, model=None):
     p = Pack() if model is None else model
     ocv(soc, model=p)
     return p.series * (1 + 0.6 / np.cosh(10 * (np.asarray(soc) - 0.5)) ** 2)
+
+
+def terminal_voltage(soc, polarization_v, current_a, temperature_c=25.0, model=None):
+    from .core import finite
+
+    p = Pack() if model is None else model
+    current = finite(current_a, real=True)
+    vp = finite(polarization_v, real=True)
+    return ocv(soc, temperature_c, p) - vp - p.r0 * current
