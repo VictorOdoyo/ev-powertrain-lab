@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 
 @dataclass(frozen=True)
 class PMSM:
@@ -29,3 +31,19 @@ def torque(current, model=None):
     if i.shape[-1] != 2:
         raise ValueError("d-q current required")
     return 1.5 * model.pole_pairs * (model.flux_wb + (model.ld_h - model.lq_h) * i[..., 0]) * i[..., 1]
+
+
+def electrical_rhs(current, voltage, omega_m, model=None):
+    from .core import finite
+
+    model = PMSM() if model is None else model
+    i, v = finite(current, real=True), finite(voltage, real=True)
+    if i.shape != (2,) or v.shape != (2,) or not np.isfinite(omega_m):
+        raise ValueError("finite d-q vectors and mechanical speed required")
+    we = model.pole_pairs * omega_m
+    return np.array(
+        [
+            (v[0] - model.resistance_ohm * i[0] + we * model.lq_h * i[1]) / model.ld_h,
+            (v[1] - model.resistance_ohm * i[1] - we * (model.ld_h * i[0] + model.flux_wb)) / model.lq_h,
+        ]
+    )
