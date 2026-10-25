@@ -47,3 +47,12 @@ def test_exact_step_matches_stationary_rl_reference():
     out = m.exact_step([0, 0], [10, 0], 0, t, p)
     assert out[0] == pytest.approx(10 / p.resistance_ohm * (1 - np.exp(-p.resistance_ohm * t / p.ld_h)))
     assert out[1] == 0
+
+
+def test_motor_energy_has_correct_current_and_speed_derivatives():
+    p = m.PMSM()
+    x = np.array([30.0, 70.0, 100.0])
+    h = 1e-4
+    delta = np.array([h, 0, 0])
+    derivative = (m.stored_energy(x + delta, p) - m.stored_energy(x - delta, p)) / (2 * h)
+    assert derivative == pytest.approx(1.5 * p.ld_h * x[0], rel=1e-7)

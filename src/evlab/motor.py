@@ -109,3 +109,13 @@ def exact_step(current, voltage, omega_m, dt_s, model=None):
     aug[:2, :2] = a
     aug[:2, 2] = b
     return (expm(aug * dt) @ np.r_[current, 1])[:2]
+
+
+def stored_energy(state, model=None):
+    from .core import finite
+
+    p = PMSM() if model is None else model
+    x = finite(state, real=True)
+    if x.shape[-1] < 3:
+        raise ValueError("id iq omega state required")
+    return 0.75 * (p.ld_h * x[..., 0] ** 2 + p.lq_h * x[..., 1] ** 2) + 0.5 * p.inertia_kg_m2 * x[..., 2] ** 2
