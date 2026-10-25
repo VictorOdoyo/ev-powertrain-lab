@@ -50,3 +50,27 @@ def thermal_current_limit(
     cold = np.clip((temperature_c - cold_stop_c) / (warm_c - cold_stop_c), 0, 1)
     hot = np.clip((hot_stop_c - temperature_c) / (hot_stop_c - hot_on_c), 0, 1)
     return float(positive(rated_a) * min(cold, hot))
+
+
+class Completion:
+    def __init__(self, taper_a=10.0, dwell_s=30.0, minimum_soc=0.95):
+        from .core import positive
+
+        self.taper = positive(taper_a)
+        self.dwell = positive(dwell_s)
+        if not 0 < minimum_soc <= 1:
+            raise ValueError("SOC completion threshold required")
+        self.minimum_soc = minimum_soc
+        self.elapsed = 0.0
+        self.complete = False
+
+    def update(self, soc, current_a, dt_s):
+        from .core import positive
+
+        dt = positive(dt_s)
+        if not 0 <= soc <= 1 or not np.isfinite(current_a):
+            raise ValueError("valid charge state required")
+        qualifying = soc >= self.minimum_soc and abs(current_a) <= self.taper
+        self.elapsed = self.elapsed + dt if qualifying else 0.0
+        self.complete |= self.elapsed >= self.dwell
+        return self.complete

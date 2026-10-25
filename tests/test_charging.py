@@ -23,3 +23,10 @@ def test_charger_blocks_subzero_and_hot_cells_and_derates_cold_pack():
     assert m.thermal_current_limit(-5) == 0
     assert m.thermal_current_limit(55) == 0
     assert m.thermal_current_limit(7.5) == 100
+
+
+def test_charge_completion_does_not_accept_empty_pack_with_zero_current():
+    detector = m.Completion(dwell_s=2)
+    assert not detector.update(0.5, 0, 5)
+    assert not detector.update(0.99, 5, 1)
+    assert detector.update(0.99, 5, 1)
