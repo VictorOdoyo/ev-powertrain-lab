@@ -146,3 +146,12 @@ def weakest_cell_limits(soc_cells, current_a, model=None):
         "maximum_v": float(cell_voltage.max()),
         "voltage_ok": bool(np.all((cell_voltage >= p.minimum_cell_v) & (cell_voltage <= p.maximum_cell_v))),
     }
+
+
+def available_energy_j(soc_low, soc_high, model=None):
+    from scipy.integrate import quad
+
+    p = Pack() if model is None else model
+    if not 0 <= soc_low <= soc_high <= 1:
+        raise ValueError("ordered SOC endpoints required")
+    return p.capacity_c * quad(lambda z: float(ocv(z, model=p)), soc_low, soc_high, epsabs=1e-5)[0]

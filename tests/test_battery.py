@@ -63,3 +63,10 @@ def test_weakest_cell_is_not_masked_by_pack_average():
     z[0] = 0
     result = m.weakest_cell_limits(z, 600, p)
     assert not result["voltage_ok"]
+
+
+def test_energy_integral_has_ocv_coulomb_derivative():
+    p = m.Pack()
+    h = 1e-5
+    derivative = (m.available_energy_j(0.2, 0.7 + h, p) - m.available_energy_j(0.2, 0.7 - h, p)) / (2 * h)
+    assert derivative == pytest.approx(p.capacity_c * m.ocv(0.7, model=p), rel=1e-8)
