@@ -102,3 +102,15 @@ def heat(soc, polarization_v, current_a, temperature_c=25.0, model=None):
         "reversible_w": entropic,
         "total_w": ohmic + relaxation + entropic,
     }
+
+
+def current_for_power(power_w, soc, polarization_v=0.0, temperature_c=25.0, model=None):
+    from .core import finite
+
+    p = Pack() if model is None else model
+    demand = float(finite(power_w, real=True))
+    available = float(ocv(soc, temperature_c, p) - polarization_v)
+    discriminant = available**2 - 4 * p.r0 * demand
+    if available <= 0 or discriminant < 0:
+        raise ValueError("constant power exceeds battery voltage-collapse limit")
+    return 2 * demand / (available + np.sqrt(discriminant))

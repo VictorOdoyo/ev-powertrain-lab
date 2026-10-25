@@ -41,3 +41,11 @@ def test_battery_resistive_heat_is_nonnegative_and_reversible_term_changes_sign(
     b = m.heat(0.5, 1, -10)
     assert a["ohmic_w"] == b["ohmic_w"]
     assert a["reversible_w"] == -b["reversible_w"]
+
+
+def test_power_inversion_is_stable_near_zero_and_supports_regeneration():
+    for power in (-20000, 1e-8, 20000):
+        i = m.current_for_power(power, 0.8)
+        assert i * m.terminal_voltage(0.8, 0, i) == pytest.approx(power, rel=1e-10)
+    with pytest.raises(ValueError):
+        m.current_for_power(1e8, 0.5)
