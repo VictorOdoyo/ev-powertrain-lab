@@ -49,3 +49,9 @@ def test_power_inversion_is_stable_near_zero_and_supports_regeneration():
         assert i * m.terminal_voltage(0.8, 0, i) == pytest.approx(power, rel=1e-10)
     with pytest.raises(ValueError):
         m.current_for_power(1e8, 0.5)
+
+
+def test_current_limits_remove_regen_at_full_soc():
+    limits = m.current_limits([1, 0], 1)
+    assert limits["charge_a"] == 0
+    assert limits["discharge_a"] > 0

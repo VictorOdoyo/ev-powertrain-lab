@@ -114,3 +114,20 @@ def current_for_power(power_w, soc, polarization_v=0.0, temperature_c=25.0, mode
     if available <= 0 or discriminant < 0:
         raise ValueError("constant power exceeds battery voltage-collapse limit")
     return 2 * demand / (available + np.sqrt(discriminant))
+
+
+def current_limits(state, dt_s, temperature_c=25.0, model=None, hardware_a=300.0):
+    from .core import positive
+
+    p = Pack() if model is None else model
+    z, vp = state
+    dt = positive(dt_s)
+    ceiling = positive(hardware_a)
+    available = float(ocv(z, temperature_c, p) - vp)
+    discharge = min(ceiling, max(0, (available - p.series * p.minimum_cell_v) / p.r0), z * p.capacity_c / dt)
+    charge = min(
+        ceiling,
+        max(0, (p.series * p.maximum_cell_v - available) / p.r0),
+        (1 - z) * p.capacity_c / (dt * 0.995),
+    )
+    return {"discharge_a": discharge, "charge_a": charge}
