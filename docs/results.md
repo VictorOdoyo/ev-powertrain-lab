@@ -1,6 +1,6 @@
 # Computed experiment gallery
 
-Twenty-four default studies computed from clean source revision [`2792f3a8b3e0`](https://github.com/VictorOdoyo/ev-powertrain-lab/commit/2792f3a8b3e00c0f3d682921027e49ad8ab7aae8).
+Twenty-four default studies computed from clean source revision [`f76abf4e92fc`](https://github.com/VictorOdoyo/ev-powertrain-lab/commit/f76abf4e92fcad76f09c382695c29ff51b7d2a71).
 All values below come from the sealed captures. Each case directory contains the complete
 NPZ arrays, CSV tables, parameters, provenance, plot and HTML report.
 
