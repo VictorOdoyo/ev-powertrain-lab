@@ -38,3 +38,8 @@ def test_tracking_residual_does_not_confuse_transport_delay_with_gain_error():
     target = np.arange(100, dtype=float)
     delayed = np.r_[0, 0, target[:-2]]
     assert m.tracking_residual(target, delayed, 2)["maximum"] == 0
+
+
+def test_power_residual_keeps_charge_and_discharge_signs():
+    result = m.power_residual([400, 400], [100, -100], [40000, -40000])
+    assert np.all(result["residual_w"] == 0)

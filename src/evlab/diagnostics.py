@@ -75,3 +75,14 @@ def tracking_residual(reference, measured, delay_samples=0):
         raise ValueError("aligned delayed tracking record required")
     error = actual[delay:] - target[: len(target) - delay] if delay else actual - target
     return {"error": error, "rms": float(np.sqrt(np.mean(error**2))), "maximum": float(np.max(abs(error)))}
+
+
+def power_residual(voltage_v, current_a, model_demand_w, minimum_scale_w=100.0):
+    from .core import finite, positive
+
+    v, i, p = np.broadcast_arrays(
+        finite(voltage_v, real=True), finite(current_a, real=True), finite(model_demand_w, real=True)
+    )
+    residual = v * i - p
+    scale = np.maximum(abs(p), positive(minimum_scale_w))
+    return {"residual_w": residual, "relative": residual / scale}
