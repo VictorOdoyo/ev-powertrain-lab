@@ -57,3 +57,23 @@ class CurrentLoop:
         applied = limit_vector(raw, dc_voltage_v)
         self.integral += dt * (self.gains["ki"] * error + (applied - raw) / self.tracking)
         return applied
+
+
+class Delay:
+    def __init__(self, samples, initial):
+        from collections import deque
+
+        from .core import finite, integer
+
+        self.count = integer(samples, 0)
+        self.queue = deque([finite(initial, real=True).copy() for _ in range(samples)])
+        self.shape = np.asarray(initial).shape
+
+    def update(self, value):
+        from .core import finite
+
+        v = finite(value, real=True)
+        if v.shape != self.shape:
+            raise ValueError("delayed command shape changed")
+        self.queue.append(v.copy())
+        return self.queue.popleft()

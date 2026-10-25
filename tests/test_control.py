@@ -32,3 +32,10 @@ def test_field_oriented_current_loop_tracks_with_actual_motor_updates():
         voltage = controller.update([0, 80], current, 200, 400, dt)
         current = exact_step(current, voltage, 200, dt, p)
     assert np.linalg.norm(current - [0, 80]) < 0.01
+
+
+def test_command_delay_has_exact_sample_latency_and_no_aliasing():
+    delay = m.Delay(2, [0, 0])
+    assert np.allclose(delay.update([1, 2]), [0, 0])
+    assert np.allclose(delay.update([3, 4]), [0, 0])
+    assert np.allclose(delay.update([5, 6]), [1, 2])
