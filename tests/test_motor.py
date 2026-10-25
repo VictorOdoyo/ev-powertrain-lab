@@ -98,3 +98,9 @@ def test_stationary_mtpa_matches_independent_bounded_minimization():
         direct = m.mtpa_stationary(torque)
         assert m.torque(direct) == pytest.approx(torque, abs=1e-9)
         assert np.allclose(direct, m.mtpa(torque), atol=1e-4)
+
+
+def test_analytic_current_circle_limit_matches_numerical_reference():
+    a = m.analytic_capability()
+    b = m.torque_capability()
+    assert a["maximum_nm"] == pytest.approx(b["maximum_nm"], rel=1e-10)

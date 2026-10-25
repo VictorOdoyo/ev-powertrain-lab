@@ -253,3 +253,12 @@ def mtpa_stationary(torque_nm, model=None):
     if np.linalg.norm(current) > p.current_limit_a + 1e-8:
         raise ValueError("MTPA current exceeds rating")
     return current
+
+
+def analytic_capability(model=None):
+    p = PMSM() if model is None else model
+    delta = p.ld_h - p.lq_h
+    limit = p.current_limit_a
+    direct = 2 * delta * limit**2 / (p.flux_wb + np.sqrt(p.flux_wb**2 + 8 * delta**2 * limit**2))
+    quadrature = np.sqrt(max(0, limit**2 - direct**2))
+    return {"maximum_nm": float(torque([direct, quadrature], p)), "id_a": direct, "iq_a": quadrature}
