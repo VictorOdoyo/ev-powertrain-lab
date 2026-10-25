@@ -81,3 +81,7 @@ def study(name, config):
 
 def urban(scale=1, seed=42):
     return study("urban-drive", Config(dt_s=0.2 / scale, duration_s=40, seed=seed))
+
+
+def highway(scale=1, seed=42):
+    return study("highway-drive", Config(cycle="highway", dt_s=0.2 / scale, duration_s=40, seed=seed))
