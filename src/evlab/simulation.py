@@ -119,6 +119,12 @@ def run(config):
             point["friction_n"] = desired
             point["wheel_force_n"] -= desired
             point["distance_m"] = (speed + next_speed) * dt / 2
+            midpoint = (speed + next_speed) / 2
+            actual_road = float(road_forces(midpoint, cycle.grade[k], model=vehicle)["total_n"])
+            point["mechanical_defect_j"] = (
+                0.5 * vehicle.effective_mass * (next_speed**2 - speed**2)
+                - (point["wheel_force_n"] - actual_road) * midpoint * dt
+            )
         else:
             point = vehicle_step(
                 speed, requested, battery, dt, cycle.grade[k], tb, tm, auxiliary, vehicle, pack
