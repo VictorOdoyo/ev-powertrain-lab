@@ -88,3 +88,17 @@ def step(state, current_a, dt_s, model=None, charge_efficiency=0.995):
         raise ValueError("step would cross SOC boundary")
     decay = np.exp(-dt / (p.r1 * p.c1))
     return np.array([soc, decay * x[1] + p.r1 * current_a * (1 - decay)])
+
+
+def heat(soc, polarization_v, current_a, temperature_c=25.0, model=None):
+    p = Pack() if model is None else model
+    ocv(soc, temperature_c, p)
+    ohmic = p.r0 * current_a**2
+    relaxation = polarization_v**2 / p.r1
+    entropic = -current_a * (temperature_c + 273.15) * (-0.0002 * p.series)
+    return {
+        "ohmic_w": ohmic,
+        "polarization_w": relaxation,
+        "reversible_w": entropic,
+        "total_w": ohmic + relaxation + entropic,
+    }

@@ -34,3 +34,10 @@ def test_held_battery_step_matches_coulomb_and_rc_solutions():
     assert x[1] == pytest.approx(p.r1 * 100 * (1 - np.exp(-1)))
     with pytest.raises(ValueError):
         m.step([0, 0], 1, 1, p)
+
+
+def test_battery_resistive_heat_is_nonnegative_and_reversible_term_changes_sign():
+    a = m.heat(0.5, 1, 10)
+    b = m.heat(0.5, 1, -10)
+    assert a["ohmic_w"] == b["ohmic_w"]
+    assert a["reversible_w"] == -b["reversible_w"]
