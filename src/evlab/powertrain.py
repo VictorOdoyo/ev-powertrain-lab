@@ -111,6 +111,7 @@ def operating_point(
         if abs(residual) < 1e-5:
             return {
                 **point,
+                "limited": bool(point["limited"] or abs(point["torque_nm"] - torque_request_nm) > 1e-4),
                 "battery_current_a": current,
                 "battery_power_w": power,
                 "bus_voltage_v": voltage,
