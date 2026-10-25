@@ -95,3 +95,54 @@ def charging(scale=1, seed=42):
         ],
         ["Illustrative OCV and CC-CV setpoints; no manufacturer certification."],
     )
+
+
+def field_weakening(scale=1, seed=42):
+    from .motor import PMSM, current_reference, steady_voltage
+
+    p = PMSM()
+    speed = np.linspace(0, 1800, 101 * scale)
+    currents = np.zeros((len(speed), 2))
+    valid = np.zeros(len(speed), bool)
+    voltage = np.zeros(len(speed))
+    for k, w in enumerate(speed):
+        try:
+            currents[k] = current_reference(60, w, 350, p)
+            voltage[k] = np.linalg.norm(steady_voltage(currents[k], w, p))
+            valid[k] = True
+        except ValueError:
+            pass
+    a = {
+        "speed_rad_s": speed,
+        "id_a": currents[:, 0],
+        "iq_a": currents[:, 1],
+        "current_a": np.linalg.norm(currents, axis=1),
+        "voltage_v": voltage,
+        "valid": valid,
+    }
+    plots = [
+        curve(
+            "Voltage-constrained current reference",
+            "speed_rad_s",
+            [("id_a", "d"), ("iq_a", "q")],
+            "Speed (rad/s)",
+            "Peak current (A)",
+            valid="valid",
+        ),
+        curve(
+            "Feasibility envelope",
+            "speed_rad_s",
+            [("voltage_v", "Voltage magnitude")],
+            "Speed (rad/s)",
+            "Peak voltage (V)",
+            valid="valid",
+        ),
+    ]
+    return make(
+        "field-weakening",
+        {"torque_nm": 60, "bus_v": 350},
+        {"feasible_fraction": float(np.mean(valid))},
+        a,
+        plots,
+        assumptions=["Unattainable speeds masked rather than plotted as zero current."],
+    )

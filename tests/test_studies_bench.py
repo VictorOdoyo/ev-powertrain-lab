@@ -16,3 +16,10 @@ def test_delay_study_propagates_delayed_commands():
 def test_charging_study_preserves_voltage_ceiling():
     r = m.charging()
     assert max(r["arrays"]["voltage_v"]) <= 403.200001
+
+
+def test_field_weakening_study_marks_infeasible_speed():
+    r = m.field_weakening()
+    a = r["arrays"]
+    assert a["valid"][0] and not a["valid"][-1]
+    assert max(a["voltage_v"]) <= 350 / np.sqrt(3) + 1e-5
