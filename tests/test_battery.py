@@ -75,3 +75,8 @@ def test_energy_integral_has_ocv_coulomb_derivative():
 def test_aging_model_counts_equal_charge_and_discharge_throughput():
     assert m.aging_increment(100, 25, 3600)["equivalent_cycles"] == pytest.approx(1 / 3)
     assert m.aging_increment(-100, 25, 3600) == m.aging_increment(100, 25, 3600)
+
+
+def test_charge_inefficiency_is_zero_on_discharge_and_closes_coulomb_loss_power():
+    assert m.charge_inefficiency_heat(100, 0.5) == 0
+    assert m.charge_inefficiency_heat(-100, 0.5) == pytest.approx(0.5 * m.ocv(0.5))

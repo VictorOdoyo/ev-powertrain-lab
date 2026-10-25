@@ -171,3 +171,9 @@ def aging_increment(current_a, temperature_c, dt_s, capacity_ah=150.0, reference
         "equivalent_cycles": throughput,
         "illustrative_capacity_loss_fraction": 0.2 * throughput * acceleration / cycles,
     }
+
+
+def charge_inefficiency_heat(current_a, soc, temperature_c=25.0, model=None, efficiency=0.995):
+    if not 0 < efficiency <= 1 or not np.isfinite(current_a):
+        raise ValueError("valid charge efficiency and current required")
+    return max(0.0, -current_a * (1 - efficiency)) * float(ocv(soc, temperature_c, model))
