@@ -32,3 +32,9 @@ def test_innovation_monitor_requires_persistent_measurement_inconsistency():
     assert not monitor.update(20, 0.1)
     assert monitor.update(20, 0.1)
     assert not monitor.update(0, 0.1)
+
+
+def test_tracking_residual_does_not_confuse_transport_delay_with_gain_error():
+    target = np.arange(100, dtype=float)
+    delayed = np.r_[0, 0, target[:-2]]
+    assert m.tracking_residual(target, delayed, 2)["maximum"] == 0

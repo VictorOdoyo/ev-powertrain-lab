@@ -63,3 +63,15 @@ class InnovationMonitor:
             raise ValueError("nonnegative normalized innovation required")
         self.elapsed = self.elapsed + dt if valid and nis > self.threshold else 0.0
         return self.elapsed >= self.dwell - 1e-12
+
+
+def tracking_residual(reference, measured, delay_samples=0):
+    from .core import finite, integer
+
+    target = finite(reference, real=True)
+    actual = finite(measured, real=True)
+    delay = integer(delay_samples, 0)
+    if target.shape != actual.shape or len(target) <= delay:
+        raise ValueError("aligned delayed tracking record required")
+    error = actual[delay:] - target[: len(target) - delay] if delay else actual - target
+    return {"error": error, "rms": float(np.sqrt(np.mean(error**2))), "maximum": float(np.max(abs(error)))}
