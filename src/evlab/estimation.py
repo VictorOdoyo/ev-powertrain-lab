@@ -90,3 +90,27 @@ def pulse_resistance(
     if resistance <= 0:
         raise ValueError("pulse edge implies nonphysical resistance")
     return resistance
+
+
+def fit_relaxation(time, voltage):
+    from scipy.optimize import least_squares
+
+    from .core import finite, timebase
+
+    t = timebase(time)
+    y = finite(voltage, real=True, ndim=1)
+    if y.shape != t.shape or len(t) < 5:
+        raise ValueError("sufficient aligned rest samples required")
+    elapsed = t - t[0]
+
+    def residual(parameters):
+        offset, amplitude, log_tau = parameters
+        return offset + amplitude * np.exp(-elapsed / np.exp(log_tau)) - y
+
+    fit = least_squares(residual, [y[-1], y[0] - y[-1], np.log(max(elapsed[-1] / 3, 1e-6))], max_nfev=1000)
+    return {
+        "offset_v": float(fit.x[0]),
+        "amplitude_v": float(fit.x[1]),
+        "tau_s": float(np.exp(fit.x[2])),
+        "residual_v": float(np.linalg.norm(fit.fun) / np.sqrt(len(t))),
+    }

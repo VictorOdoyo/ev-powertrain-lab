@@ -40,3 +40,10 @@ def test_pulse_resistance_recovers_pack_r0_before_polarization_changes():
     before = float(terminal_voltage(0.8, 0, 0, model=p))
     after = float(terminal_voltage(0.8, 0, 100, model=p))
     assert m.pulse_resistance(before, after, 0, 100) == pytest.approx(p.r0)
+
+
+def test_relaxation_fit_estimates_unknown_offset_amplitude_and_tau():
+    t = np.linspace(5, 150, 100)
+    fit = m.fit_relaxation(t, 380 - 2 * np.exp(-(t - 5) / 30))
+    assert fit["tau_s"] == pytest.approx(30, rel=1e-6)
+    assert fit["residual_v"] < 1e-8
