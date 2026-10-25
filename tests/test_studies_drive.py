@@ -29,3 +29,9 @@ def test_friction_replay_rejects_motor_regeneration():
 def test_full_pack_never_overcharges():
     r = m.full_pack()
     assert np.max(r["arrays"]["soc"]) <= 1
+
+
+def test_hot_pack_blocks_traction():
+    r = m.hot_pack()
+    assert r["summary"]["distance_m"] == 0
+    assert np.all(r["arrays"]["battery_current_a"] == 0)

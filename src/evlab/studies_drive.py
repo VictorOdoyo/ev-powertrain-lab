@@ -97,3 +97,7 @@ def friction_only(scale=1, seed=42):
 
 def full_pack(scale=1, seed=42):
     return study("full-pack-braking", Config(dt_s=0.2 / scale, duration_s=40, initial_soc=0.9999, seed=seed))
+
+
+def hot_pack(scale=1, seed=42):
+    return study("hot-pack-shutdown", Config(dt_s=0.2 / scale, duration_s=10, battery_c=65, seed=seed))
