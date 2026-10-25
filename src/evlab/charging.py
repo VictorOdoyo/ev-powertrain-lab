@@ -23,3 +23,13 @@ def command(state, dt_s, temperature_c=25.0, model=None, maximum_a=200.0, target
     if future_voltage(upper) <= target:
         return -upper
     return -float(brentq(lambda value: future_voltage(value) - target, 0, upper))
+
+
+def grid_power(battery_power_w, efficiency=0.94, auxiliary_w=100.0):
+    from .core import positive
+
+    if not 0 < efficiency <= 1:
+        raise ValueError("charging efficiency in (0,1] required")
+    if battery_power_w > 0:
+        raise ValueError("charger expects nonpositive battery discharge power")
+    return -battery_power_w / efficiency + positive(auxiliary_w, allow_zero=True)

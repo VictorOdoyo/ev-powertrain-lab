@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from evlab import charging as m
 
@@ -12,3 +13,7 @@ def test_cccv_command_respects_predicted_terminal_voltage_and_soc():
     future = step(state, current, 10, p)
     assert current <= 0
     assert terminal_voltage(future[0], future[1], current, model=p) <= p.series * 4.2 + 1e-8
+
+
+def test_grid_charging_power_includes_losses_and_auxiliaries():
+    assert m.grid_power(-9400) == pytest.approx(10100)
