@@ -45,3 +45,8 @@ def test_observer_study_records_sensor_bias():
 def test_heavy_study_increases_only_mass_request():
     r = m.heavy()
     assert r["parameters"]["replay"]["mass_scale"] == 1.6
+
+
+def test_motor_derating_replay_stays_finite():
+    r = m.hot_motor()
+    assert np.max(r["arrays"]["pump_w"]) == 0

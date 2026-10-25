@@ -111,3 +111,9 @@ def biased(scale=1, seed=42):
 
 def heavy(scale=1, seed=42):
     return study("heavy-vehicle", Config(dt_s=0.2 / scale, duration_s=20, mass_scale=1.6, seed=seed))
+
+
+def hot_motor(scale=1, seed=42):
+    return study(
+        "hot-motor-derating", Config(dt_s=0.2 / scale, duration_s=20, motor_c=100, cooling=False, seed=seed)
+    )
