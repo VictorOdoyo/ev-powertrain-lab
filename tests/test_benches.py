@@ -13,3 +13,9 @@ def test_charge_tapers_and_respects_predictive_voltage_ceiling():
     assert a["soc"][-1] > 0.98
     assert np.max(a["voltage_v"]) <= 96 * 4.2 + 1e-7
     assert np.all(a["current_a"] <= 0)
+
+
+def test_cold_charge_replay_obeys_zero_charge_envelope():
+    a = m.charge(3, 1, 0.8, -5)
+    assert np.all(a["current_a"] == 0)
+    assert a["soc"][-1] == 0.8

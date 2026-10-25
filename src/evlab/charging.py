@@ -9,7 +9,7 @@ def command(state, dt_s, temperature_c=25.0, model=None, maximum_a=200.0, target
 
     p = Pack() if model is None else model
     dt = positive(dt_s)
-    maximum = positive(maximum_a)
+    maximum = positive(maximum_a, allow_zero=True)
     if not p.minimum_cell_v < target_cell_v <= p.maximum_cell_v:
         raise ValueError("charging voltage inside pack limits required")
     z, _vp = state
