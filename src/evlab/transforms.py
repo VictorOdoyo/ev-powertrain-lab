@@ -29,3 +29,7 @@ def park(ab, theta):
         raise ValueError("two stationary coordinates required")
     c, s = np.cos(angle), np.sin(angle)
     return np.stack((c * v[..., 0] + s * v[..., 1], -s * v[..., 0] + c * v[..., 1]), axis=-1)
+
+
+def inverse_park(dq, theta):
+    return park(dq, -np.asarray(theta))

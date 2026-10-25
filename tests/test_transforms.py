@@ -16,3 +16,9 @@ def test_inverse_clarke_roundtrip_unbalanced():
 def test_park_aligns_rotor_flux_and_preserves_norm():
     angle = 0.7
     assert np.allclose(m.park([np.cos(angle), np.sin(angle)], angle), [1, 0])
+
+
+def test_inverse_park_roundtrip():
+    angle = np.linspace(-3, 3, 20)
+    v = np.column_stack((np.ones(20) * 2, np.ones(20) * 3))
+    assert np.allclose(m.inverse_park(m.park(v, angle), angle), v)
