@@ -64,3 +64,31 @@ def metrics(cycle):
         "maximum_speed_m_s": float(cycle.speed_m_s.max()),
         "stop_sample_fraction": float(np.mean(cycle.speed_m_s < 0.1)),
     }
+
+
+def write_csv(cycle, path):
+    import csv
+    from pathlib import Path
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.writer(stream, lineterminator="\n")
+        writer.writerow(["time_s", "speed_m_s", "grade"])
+        writer.writerows(zip(cycle.time_s, cycle.speed_m_s, cycle.grade, strict=True))
+    return path
+
+
+def read_csv(path, label="imported"):
+    import csv
+    from pathlib import Path
+
+    with Path(path).open(encoding="utf-8", newline="") as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames != ["time_s", "speed_m_s", "grade"]:
+            raise ValueError("exact SI cycle schema required")
+        rows = [[float(row[k]) for k in reader.fieldnames] for row in reader]
+    array = np.asarray(rows)
+    if array.ndim != 2 or array.shape[1] != 3:
+        raise ValueError("nonempty cycle required")
+    return Cycle(array[:, 0], array[:, 1], array[:, 2], label)

@@ -29,3 +29,11 @@ def test_route_grade_is_tangent_not_small_angle_height_identity():
     result = m.metrics(cycle)
     assert result["distance_m"] == 100
     assert result["elevation_change_m"] == pytest.approx(10 / np.sqrt(1.01))
+
+
+def test_cycle_csv_roundtrip_preserves_arrays_and_si_header(tmp_path):
+    original = m.synthetic()
+    path = m.write_csv(original, tmp_path / "cycle.csv")
+    restored = m.read_csv(path)
+    assert np.array_equal(original.speed_m_s, restored.speed_m_s)
+    assert b"\r\n" not in path.read_bytes()
