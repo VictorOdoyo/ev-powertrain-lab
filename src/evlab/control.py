@@ -77,3 +77,19 @@ class Delay:
             raise ValueError("delayed command shape changed")
         self.queue.append(v.copy())
         return self.queue.popleft()
+
+
+def quantize_current(current_a, full_scale_a=500.0, bits=12):
+    from .core import finite, integer, positive
+
+    v = finite(current_a, real=True)
+    rail = positive(full_scale_a)
+    integer(bits, 2)
+    if bits > 24:
+        raise ValueError("at most 24 ADC bits supported")
+    step = 2 * rail / (2**bits - 1)
+    return {
+        "value": np.rint((np.clip(v, -rail, rail) + rail) / step) * step - rail,
+        "clipped": abs(v) > rail,
+        "lsb_a": step,
+    }

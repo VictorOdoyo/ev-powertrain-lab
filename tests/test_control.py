@@ -39,3 +39,10 @@ def test_command_delay_has_exact_sample_latency_and_no_aliasing():
     assert np.allclose(delay.update([1, 2]), [0, 0])
     assert np.allclose(delay.update([3, 4]), [0, 0])
     assert np.allclose(delay.update([5, 6]), [1, 2])
+
+
+def test_adc_error_is_bounded_and_clipping_is_explicit():
+    value = np.array([1.0, 3.0, 1000.0])
+    result = m.quantize_current(value)
+    assert np.max(abs(result["value"][:2] - value[:2])) <= result["lsb_a"] / 2 + 1e-12
+    assert result["clipped"][-1]
