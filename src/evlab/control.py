@@ -93,3 +93,12 @@ def quantize_current(current_a, full_scale_a=500.0, bits=12):
         "clipped": abs(v) > rail,
         "lsb_a": step,
     }
+
+
+def slew(previous, target, rate_nm_s, dt_s):
+    from .core import positive
+
+    maximum = positive(rate_nm_s) * positive(dt_s)
+    if not np.isfinite(previous + target):
+        raise ValueError("finite torque commands required")
+    return float(previous + np.clip(target - previous, -maximum, maximum))

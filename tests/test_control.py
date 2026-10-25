@@ -46,3 +46,8 @@ def test_adc_error_is_bounded_and_clipping_is_explicit():
     result = m.quantize_current(value)
     assert np.max(abs(result["value"][:2] - value[:2])) <= result["lsb_a"] / 2 + 1e-12
     assert result["clipped"][-1]
+
+
+def test_torque_slew_is_time_based_not_sample_count_based():
+    assert m.slew(0, 100, 1000, 0.01) == 10
+    assert m.slew(0, -100, 1000, 0.01) == -10
