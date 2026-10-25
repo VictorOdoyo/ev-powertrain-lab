@@ -50,3 +50,17 @@ def resample(cycle, dt_s):
     return Cycle(
         t, np.interp(t, cycle.time_s, cycle.speed_m_s), np.interp(t, cycle.time_s, cycle.grade), cycle.label
     )
+
+
+def metrics(cycle):
+    from .core import integrate
+
+    distance = float(integrate(cycle.time_s, cycle.speed_m_s).real)
+    vertical_speed = cycle.speed_m_s * cycle.grade / np.sqrt(1 + cycle.grade**2)
+    return {
+        "distance_m": distance,
+        "elevation_change_m": float(integrate(cycle.time_s, vertical_speed).real),
+        "duration_s": float(cycle.time_s[-1] - cycle.time_s[0]),
+        "maximum_speed_m_s": float(cycle.speed_m_s.max()),
+        "stop_sample_fraction": float(np.mean(cycle.speed_m_s < 0.1)),
+    }

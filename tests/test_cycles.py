@@ -22,3 +22,10 @@ def test_resampling_preserves_boundaries_and_linear_ramp():
     fine = m.resample(cycle, 0.1)
     assert fine.time_s[-1] == 10
     assert np.allclose(fine.speed_m_s, 2 * fine.time_s)
+
+
+def test_route_grade_is_tangent_not_small_angle_height_identity():
+    cycle = m.Cycle([0, 10], [10, 10], 0.1)
+    result = m.metrics(cycle)
+    assert result["distance_m"] == 100
+    assert result["elevation_change_m"] == pytest.approx(10 / np.sqrt(1.01))
