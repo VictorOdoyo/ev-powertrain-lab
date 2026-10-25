@@ -179,3 +179,38 @@ def torque_capability(model=None):
         "id_a": float(fit.x),
         "iq_a": float(np.sqrt(p.current_limit_a**2 - fit.x**2)),
     }
+
+
+def current_reference(torque_nm, omega_m, dc_voltage_v, model=None):
+    from scipy.optimize import minimize
+
+    from .core import positive
+
+    p = PMSM() if model is None else model
+    limit = positive(dc_voltage_v) / np.sqrt(3)
+    guess = mtpa(torque_nm, p)
+    constraints = [
+        {"type": "eq", "fun": lambda i: float(torque(i, p) - torque_nm)},
+        {"type": "ineq", "fun": lambda i: p.current_limit_a**2 - float(i @ i)},
+        {
+            "type": "ineq",
+            "fun": lambda i: limit**2 - float(steady_voltage(i, omega_m, p) @ steady_voltage(i, omega_m, p)),
+        },
+    ]
+    fit = minimize(
+        lambda i: float(i @ i),
+        guess,
+        method="SLSQP",
+        bounds=[(-p.current_limit_a, p.current_limit_a)] * 2,
+        constraints=constraints,
+        options={"ftol": 1e-9, "maxiter": 150},
+    )
+    i = fit.x
+    feasible = (
+        abs(torque(i, p) - torque_nm) < 1e-5
+        and np.linalg.norm(i) <= p.current_limit_a + 1e-5
+        and np.linalg.norm(steady_voltage(i, omega_m, p)) <= limit + 1e-5
+    )
+    if not feasible:
+        raise ValueError("torque request infeasible under current and voltage limits")
+    return i

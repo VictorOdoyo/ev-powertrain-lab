@@ -76,3 +76,11 @@ def test_torque_capability_agrees_with_dense_independent_circle_search():
     currents = np.column_stack((p.current_limit_a * np.cos(angle), p.current_limit_a * np.sin(angle)))
     result = m.torque_capability(p)
     assert result["maximum_nm"] == pytest.approx(np.max(m.torque(currents, p)), rel=1e-7)
+
+
+def test_field_weakening_satisfies_voltage_and_current_ellipse():
+    p = m.PMSM()
+    current = m.current_reference(40, 900, 400, p)
+    assert current[0] < -30
+    assert abs(m.torque(current, p) - 40) < 1e-5
+    assert np.linalg.norm(m.steady_voltage(current, 900, p)) <= 400 / np.sqrt(3) + 1e-5
