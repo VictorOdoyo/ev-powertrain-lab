@@ -40,3 +40,8 @@ def test_hot_pack_blocks_traction():
 def test_observer_study_records_sensor_bias():
     r = m.biased()
     assert r["parameters"]["replay"]["current_bias_a"] == 8
+
+
+def test_heavy_study_increases_only_mass_request():
+    r = m.heavy()
+    assert r["parameters"]["replay"]["mass_scale"] == 1.6
