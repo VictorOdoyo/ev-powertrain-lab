@@ -131,3 +131,18 @@ def current_limits(state, dt_s, temperature_c=25.0, model=None, hardware_a=300.0
         (1 - z) * p.capacity_c / (dt * 0.995),
     )
     return {"discharge_a": discharge, "charge_a": charge}
+
+
+def weakest_cell_limits(soc_cells, current_a, model=None):
+    from .core import finite
+
+    p = Pack() if model is None else model
+    z = finite(soc_cells, real=True, ndim=1)
+    if len(z) != p.series:
+        raise ValueError("one SOC per series cell required")
+    cell_voltage = ocv(z, model=p) / p.series - p.cell_r0_ohm * current_a / p.parallel
+    return {
+        "minimum_v": float(cell_voltage.min()),
+        "maximum_v": float(cell_voltage.max()),
+        "voltage_ok": bool(np.all((cell_voltage >= p.minimum_cell_v) & (cell_voltage <= p.maximum_cell_v))),
+    }

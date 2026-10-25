@@ -55,3 +55,11 @@ def test_current_limits_remove_regen_at_full_soc():
     limits = m.current_limits([1, 0], 1)
     assert limits["charge_a"] == 0
     assert limits["discharge_a"] > 0
+
+
+def test_weakest_cell_is_not_masked_by_pack_average():
+    p = m.Pack()
+    z = np.full(p.series, 0.8)
+    z[0] = 0
+    result = m.weakest_cell_limits(z, 600, p)
+    assert not result["voltage_ok"]
