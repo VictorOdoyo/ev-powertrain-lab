@@ -119,3 +119,26 @@ def stored_energy(state, model=None):
     if x.shape[-1] < 3:
         raise ValueError("id iq omega state required")
     return 0.75 * (p.ld_h * x[..., 0] ** 2 + p.lq_h * x[..., 1] ** 2) + 0.5 * p.inertia_kg_m2 * x[..., 2] ** 2
+
+
+def coupled_step(state, voltage, load_nm, dt_s, model=None):
+    from .core import finite, positive
+
+    p = PMSM() if model is None else model
+    x = finite(state, real=True)
+    if x.shape != (4,):
+        raise ValueError("id iq omega mechanical-angle state required")
+    dt = positive(dt_s)
+
+    def rhs(y):
+        electrical = electrical_rhs(y[:2], voltage, y[2], p)
+        return np.r_[electrical, mechanical_rhs(y[2], torque(y[:2], p), load_nm, p), y[2]]
+
+    k1 = rhs(x)
+    k2 = rhs(x + dt * k1 / 2)
+    k3 = rhs(x + dt * k2 / 2)
+    k4 = rhs(x + dt * k3)
+    result = x + dt * (k1 + 2 * k2 + 2 * k3 + k4) / 6
+    if not np.all(np.isfinite(result)):
+        raise RuntimeError("nonfinite motor integration")
+    return result

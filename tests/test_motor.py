@@ -56,3 +56,8 @@ def test_motor_energy_has_correct_current_and_speed_derivatives():
     delta = np.array([h, 0, 0])
     derivative = (m.stored_energy(x + delta, p) - m.stored_energy(x - delta, p)) / (2 * h)
     assert derivative == pytest.approx(1.5 * p.ld_h * x[0], rel=1e-7)
+
+
+def test_coupled_motor_rotates_and_accelerates_from_q_current():
+    x = m.coupled_step([0, 100, 0, 0], [0, 4], 0, 1e-5)
+    assert x[2] > 0 and x[3] > 0
