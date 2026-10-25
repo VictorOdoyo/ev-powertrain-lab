@@ -3,7 +3,7 @@ import numpy as np
 
 def motor_point(torque_request_nm, omega_m, dc_voltage_v, temperature_c=25.0, model=None):
     from .inverter import losses
-    from .motor import PMSM, at_temperature, current_reference, torque, torque_capability
+    from .motor import PMSM, analytic_capability, at_temperature, current_reference, torque
     from .thermal import derate
 
     p = at_temperature(temperature_c, PMSM() if model is None else model)
@@ -21,7 +21,7 @@ def motor_point(torque_request_nm, omega_m, dc_voltage_v, temperature_c=25.0, mo
             "limited": True,
         }
     p = replace(p, current_limit_a=p.current_limit_a * fraction)
-    maximum = torque_capability(p)["maximum_nm"]
+    maximum = analytic_capability(p)["maximum_nm"]
     command = float(np.clip(torque_request_nm, -maximum, maximum))
     for _ in range(80):
         try:

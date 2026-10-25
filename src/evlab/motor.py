@@ -188,7 +188,9 @@ def current_reference(torque_nm, omega_m, dc_voltage_v, model=None):
 
     p = PMSM() if model is None else model
     limit = positive(dc_voltage_v) / np.sqrt(3)
-    guess = mtpa(torque_nm, p)
+    guess = mtpa_stationary(torque_nm, p)
+    if np.linalg.norm(steady_voltage(guess, omega_m, p)) <= limit:
+        return guess
     constraints = [
         {"type": "eq", "fun": lambda i: float(torque(i, p) - torque_nm)},
         {"type": "ineq", "fun": lambda i: p.current_limit_a**2 - float(i @ i)},
