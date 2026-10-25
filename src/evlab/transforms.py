@@ -42,3 +42,9 @@ def dq_power(voltage, current):
     if v.shape[-1] != 2:
         raise ValueError("d-q vectors required")
     return 1.5 * np.sum(v * i, axis=-1)
+
+
+def wrap(angle):
+    from .core import finite
+
+    return (finite(angle, real=True) + np.pi) % (2 * np.pi) - np.pi

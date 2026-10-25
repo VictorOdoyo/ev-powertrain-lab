@@ -29,3 +29,7 @@ def test_dq_power_equals_phase_sum_for_balanced_signals():
     abc = np.array([100, -30, -70.0])
     current = np.array([5, 2, -7.0])
     assert m.dq_power(m.clarke(abc)[:2], m.clarke(current)[:2]) == pytest.approx(abc @ current)
+
+
+def test_angle_wrap_is_periodic_at_large_rotations():
+    assert m.wrap(100 * np.pi + 0.3) == pytest.approx(0.3)
