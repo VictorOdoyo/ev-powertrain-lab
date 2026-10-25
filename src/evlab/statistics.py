@@ -36,3 +36,25 @@ def route_energy(time_s, speed_m_s, grade, vehicle=None):
         "road_j": float(np.sum(road)),
         "kinetic_change_j": float(np.sum(kinetic)),
     }
+
+
+def interval(values, coverage=0.9):
+    from .core import finite
+
+    a = finite(values, real=True, ndim=1)
+    if not 0 < coverage < 1 or len(a) < 2:
+        raise ValueError("nonempty ensemble and interior coverage required")
+    return np.quantile(a, [(1 - coverage) / 2, 0.5, (1 + coverage) / 2])
+
+
+def sensitivity(function, parameters, relative_step=0.001):
+    from .core import finite, positive
+
+    p = finite(parameters, real=True, ndim=1)
+    h = positive(relative_step) * np.maximum(abs(p), 1)
+    result = []
+    for k in range(len(p)):
+        d = np.zeros(len(p))
+        d[k] = h[k]
+        result.append((function(p + d) - function(p - d)) / (2 * h[k]))
+    return np.asarray(result)
