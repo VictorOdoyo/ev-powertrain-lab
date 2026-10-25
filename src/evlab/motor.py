@@ -19,3 +19,13 @@ class PMSM:
         for k in ("resistance_ohm", "ld_h", "lq_h", "flux_wb", "inertia_kg_m2", "current_limit_a"):
             positive(getattr(self, k), k)
         positive(self.friction_nm_s, allow_zero=True)
+
+
+def torque(current, model=None):
+    from .core import finite
+
+    model = PMSM() if model is None else model
+    i = finite(current, real=True)
+    if i.shape[-1] != 2:
+        raise ValueError("d-q current required")
+    return 1.5 * model.pole_pairs * (model.flux_wb + (model.ld_h - model.lq_h) * i[..., 0]) * i[..., 1]
