@@ -51,3 +51,11 @@ def motor_torque(force_n, speed_m_s, model=None):
     drive = force * np.asarray(speed_m_s) >= 0
     torque = force * p.wheel_radius_m / p.gear
     return np.where(drive, torque / p.gear_efficiency, torque * p.gear_efficiency)
+
+
+def wheel_force(torque_nm, speed_m_s, model=None):
+    p = Vehicle() if model is None else model
+    torque = np.asarray(torque_nm, float)
+    drive = torque * np.asarray(speed_m_s) >= 0
+    force = torque * p.gear / p.wheel_radius_m
+    return np.where(drive, force * p.gear_efficiency, force / p.gear_efficiency)

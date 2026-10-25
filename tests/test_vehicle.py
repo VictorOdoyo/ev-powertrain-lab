@@ -21,3 +21,8 @@ def test_regen_gear_loss_reduces_recovered_shaft_power():
     speed = 20.0
     shaft = m.motor_torque(force, speed, p) * speed * p.gear / p.wheel_radius_m
     assert shaft == pytest.approx(force * speed * p.gear_efficiency)
+
+
+def test_bidirectional_driveline_roundtrip():
+    for force in (-1000, 0, 1000):
+        assert m.wheel_force(m.motor_torque(force, 20), 20) == pytest.approx(force)
