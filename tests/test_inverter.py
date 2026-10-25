@@ -31,3 +31,10 @@ def test_deadtime_error_is_current_odd_and_common_mode_free():
     error = m.deadtime_error(current, 400, 1e-6, 10000)
     assert np.allclose(m.deadtime_error(-current, 400, 1e-6, 10000), -error)
     assert abs(sum(error)) < 1e-12
+
+
+def test_switching_loss_doubles_with_frequency_and_is_not_signed_power():
+    a = m.losses([0, 100], 400, 10000)
+    b = m.losses([0, -100], 400, 20000)
+    assert b["switching_w"] == pytest.approx(2 * a["switching_w"])
+    assert b["conduction_w"] == a["conduction_w"]

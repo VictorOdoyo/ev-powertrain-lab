@@ -50,3 +50,31 @@ def deadtime_error(phase_current_a, dc_voltage_v, deadtime_s, switch_hz):
         raise ValueError("deadtime exceeds half switching period")
     error = -np.sign(i) * positive(dc_voltage_v) * fraction
     return error - np.mean(error, axis=-1, keepdims=True)
+
+
+def losses(
+    current_dq,
+    dc_voltage_v,
+    switch_hz=10000,
+    temperature_c=60.0,
+    on_resistance_ohm=0.005,
+    switch_energy_j=0.003,
+    reference_current_a=100.0,
+):
+    from .core import finite, positive
+
+    current = finite(current_dq, real=True)
+    peak = np.linalg.norm(current, axis=-1)
+    resistance = positive(on_resistance_ohm) * (1 + 0.004 * (temperature_c - 25))
+    if resistance <= 0:
+        raise ValueError("invalid resistance temperature extrapolation")
+    conduction = 1.5 * resistance * peak**2
+    switching = (
+        6
+        * positive(switch_energy_j)
+        * positive(switch_hz)
+        * (positive(dc_voltage_v) / 400)
+        * peak
+        / positive(reference_current_a)
+    )
+    return {"conduction_w": conduction, "switching_w": switching, "total_w": conduction + switching}
