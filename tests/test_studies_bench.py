@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from evlab import studies_bench as m
 
@@ -28,3 +29,10 @@ def test_field_weakening_study_marks_infeasible_speed():
 def test_mtpa_study_compares_independent_solvers():
     r = m.mtpa_curve()
     assert r["summary"]["maximum_independent_error_a"] < 1e-4
+
+
+def test_pulse_study_relaxes_after_current_removal():
+    r = m.battery_pulse()
+    a = r["arrays"]
+    assert a["polarization_v"][-1] < max(a["polarization_v"])
+    assert a["soc"][-1] == pytest.approx(0.7 - 3000 / 540000)

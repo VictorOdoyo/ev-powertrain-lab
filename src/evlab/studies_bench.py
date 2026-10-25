@@ -178,3 +178,41 @@ def mtpa_curve(scale=1, seed=42):
             ),
         ],
     )
+
+
+def battery_pulse(scale=1, seed=42):
+    from .battery import Pack, step, terminal_voltage
+
+    p = Pack()
+    dt = 0.2 / scale
+    t = np.arange(0, 90 + dt / 2, dt)
+    state = np.array([0.7, 0.0])
+    a = {
+        "time_s": t,
+        "current_a": np.where((t > 10) & (t <= 40), 100.0, 0.0),
+        "soc": np.zeros(len(t)),
+        "polarization_v": np.zeros(len(t)),
+        "voltage_v": np.zeros(len(t)),
+    }
+    for k in range(len(t)):
+        if k:
+            state = step(state, a["current_a"][k], dt, p)
+        a["soc"][k], a["polarization_v"][k] = state
+        a["voltage_v"][k] = terminal_voltage(*state, a["current_a"][k], model=p)
+    return lines(
+        "battery-pulse",
+        {"r0_ohm": p.r0, "r1_ohm": p.r1, "tau_s": p.r1 * p.c1},
+        {"final_soc": float(state[0])},
+        a,
+        [
+            ("Applied load", "time_s", [("current_a", "Pack current")], "Time (s)", "Current (A)"),
+            (
+                "Polarization and recovery",
+                "time_s",
+                [("polarization_v", "RC state")],
+                "Time (s)",
+                "Voltage (V)",
+            ),
+            ("Terminal response", "time_s", [("voltage_v", "Terminal")], "Time (s)", "Voltage (V)"),
+        ],
+    )
