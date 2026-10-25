@@ -21,7 +21,7 @@ def impedance(scale=1, seed=42):
     z = pack_impedance(f)
     fit = fit_impedance(f, z)
     a = {"frequency_hz": f, "real_ohm": z.real, "negative_imag_ohm": -z.imag, "impedance_ohm": z}
-    return output(
+    result = output(
         "pack-impedance",
         {"frequency_min_hz": 0.001, "frequency_max_hz": 100},
         fit,
@@ -32,6 +32,8 @@ def impedance(scale=1, seed=42):
         "Frequency (Hz)",
         "Impedance (ohm)",
     )
+    result["plots"][0]["xscale"] = "log"
+    return result
 
 
 def precharge(scale=1, seed=42):

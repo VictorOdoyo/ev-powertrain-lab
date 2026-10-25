@@ -27,3 +27,7 @@ def test_resistance_tracking_study_recovers_truth():
 def test_hysteresis_reversal_stays_inside_declared_bounds():
     r = m.hysteresis()
     assert np.max(abs(r["arrays"]["hysteresis_v"])) <= 2
+
+
+def test_impedance_plot_resolves_low_frequency_polarization():
+    assert m.impedance()["plots"][0]["xscale"] == "log"
