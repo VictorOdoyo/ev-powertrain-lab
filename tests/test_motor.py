@@ -39,3 +39,11 @@ def test_mechanical_balance_and_reverse_load():
     speed = 100.0
     a = m.mechanical_rhs(speed, 20, 5, p)
     assert p.inertia_kg_m2 * speed * a + 5 * speed + p.friction_nm_s * speed**2 == pytest.approx(20 * speed)
+
+
+def test_exact_step_matches_stationary_rl_reference():
+    p = m.PMSM()
+    t = 0.003
+    out = m.exact_step([0, 0], [10, 0], 0, t, p)
+    assert out[0] == pytest.approx(10 / p.resistance_ohm * (1 - np.exp(-p.resistance_ohm * t / p.ld_h)))
+    assert out[1] == 0

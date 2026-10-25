@@ -88,3 +88,24 @@ def mechanical_rhs(omega_m, electromagnetic_nm, load_nm, model=None):
     if not np.all(np.isfinite([omega_m, electromagnetic_nm, load_nm])):
         raise ValueError("finite mechanical inputs required")
     return (electromagnetic_nm - load_nm - p.friction_nm_s * omega_m) / p.inertia_kg_m2
+
+
+def exact_step(current, voltage, omega_m, dt_s, model=None):
+    from scipy.linalg import expm
+
+    from .core import positive
+
+    p = PMSM() if model is None else model
+    dt = positive(dt_s)
+    we = p.pole_pairs * omega_m
+    a = np.array(
+        [
+            [-p.resistance_ohm / p.ld_h, we * p.lq_h / p.ld_h],
+            [-we * p.ld_h / p.lq_h, -p.resistance_ohm / p.lq_h],
+        ]
+    )
+    b = np.array([voltage[0] / p.ld_h, (voltage[1] - we * p.flux_wb) / p.lq_h])
+    aug = np.zeros((3, 3))
+    aug[:2, :2] = a
+    aug[:2, 2] = b
+    return (expm(aug * dt) @ np.r_[current, 1])[:2]
