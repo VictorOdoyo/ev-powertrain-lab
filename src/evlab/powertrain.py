@@ -52,3 +52,50 @@ def motor_point(torque_request_nm, omega_m, dc_voltage_v, temperature_c=25.0, mo
         "dc_w": ac + electronic,
         "limited": bool(abs(delivered - torque_request_nm) > 1e-4),
     }
+
+
+def operating_point(
+    torque_request_nm,
+    omega_m,
+    battery_state,
+    dt_s,
+    temperature_battery_c=25.0,
+    temperature_motor_c=25.0,
+    auxiliary_w=300.0,
+    battery_model=None,
+    motor_model=None,
+):
+    from .battery import Pack, current_for_power, current_limits, ocv, terminal_voltage
+    from .core import positive
+
+    p = Pack() if battery_model is None else battery_model
+    z, vp = battery_state
+    limits = current_limits(battery_state, dt_s, temperature_battery_c, p)
+    bus = float(ocv(z, temperature_battery_c, p) - vp)
+    command = float(torque_request_nm)
+    auxiliary = positive(auxiliary_w, allow_zero=True)
+    for _ in range(100):
+        point = motor_point(command, omega_m, bus, temperature_motor_c, motor_model)
+        power = point["dc_w"] + auxiliary
+        try:
+            current = current_for_power(power, z, vp, temperature_battery_c, p)
+        except ValueError:
+            command *= 0.8
+            continue
+        if current > limits["discharge_a"] + 1e-8 or current < -limits["charge_a"] + 1e-8:
+            command *= 0.8
+            continue
+        voltage = float(terminal_voltage(z, vp, current, temperature_battery_c, p))
+        if voltage <= 0:
+            raise RuntimeError("nonpositive battery bus")
+        residual = voltage - bus
+        if abs(residual) < 1e-5:
+            return {
+                **point,
+                "battery_current_a": current,
+                "battery_power_w": power,
+                "bus_voltage_v": voltage,
+                "bus_residual_v": residual,
+            }
+        bus = (bus + voltage) / 2
+    raise ValueError("power request cannot satisfy battery current and voltage envelope")
