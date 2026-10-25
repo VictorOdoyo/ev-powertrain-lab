@@ -24,3 +24,24 @@ class Contactor:
             raise ValueError("zero-current reset required")
         self.elapsed = 0.0
         self.closed = True
+
+
+def precharge(bus_v, link_v, resistance_ohm, capacitance_f, dt_s):
+    r = positive(resistance_ohm)
+    c = positive(capacitance_f)
+    dt = positive(dt_s)
+    if not np.isfinite(bus_v + link_v) or min(bus_v, link_v) < 0:
+        raise ValueError("nonnegative finite DC voltages required")
+    delta = bus_v - link_v
+    decay = np.exp(-dt / (r * c))
+    end = bus_v - delta * decay
+    heat = 0.5 * c * delta**2 * (1 - decay**2)
+    source = c * bus_v * (end - link_v)
+    stored = 0.5 * c * (end**2 - link_v**2)
+    return {
+        "link_v": end,
+        "resistor_heat_j": heat,
+        "source_j": source,
+        "stored_j": stored,
+        "defect_j": source - stored - heat,
+    }

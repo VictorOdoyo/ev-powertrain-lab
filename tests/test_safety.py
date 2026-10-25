@@ -12,3 +12,9 @@ def test_contactor_latches_after_dwell_and_rejects_loaded_reset():
         r.reset(100)
     r.reset(0)
     assert r.closed
+
+
+def test_precharge_energy_closes_and_link_approaches_bus():
+    a = m.precharge(400, 0, 100, 0.002, 1)
+    assert 390 < a["link_v"] < 400
+    assert abs(a["defect_j"]) < 1e-10
