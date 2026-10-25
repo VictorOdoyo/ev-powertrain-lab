@@ -227,3 +227,29 @@ def at_temperature(temperature_c, model=None, copper_alpha=0.00393, magnet_alpha
         resistance_ohm=p.resistance_ohm * (1 + copper_alpha * (temperature_c - 25)),
         flux_wb=p.flux_wb * (1 + magnet_alpha * (temperature_c - 25)),
     )
+
+
+def mtpa_stationary(torque_nm, model=None):
+    from scipy.optimize import brentq
+
+    p = PMSM() if model is None else model
+    if not np.isfinite(torque_nm):
+        raise ValueError("finite torque required")
+    delta = p.ld_h - p.lq_h
+    constant = 1.5 * p.pole_pairs
+    if abs(torque_nm) < 1e-14:
+        return np.zeros(2)
+    if abs(delta) < 1e-14:
+        current = np.array([0.0, torque_nm / (constant * p.flux_wb)])
+    else:
+        target = (torque_nm / constant) ** 2 * delta
+
+        def function(d):
+            return d * (p.flux_wb + delta * d) ** 3 - target
+
+        bounds = (-p.current_limit_a, 0) if delta < 0 else (0, p.current_limit_a)
+        direct = brentq(function, *bounds)
+        current = np.array([direct, torque_nm / (constant * (p.flux_wb + delta * direct))])
+    if np.linalg.norm(current) > p.current_limit_a + 1e-8:
+        raise ValueError("MTPA current exceeds rating")
+    return current

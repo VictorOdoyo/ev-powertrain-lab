@@ -91,3 +91,10 @@ def test_hot_motor_has_more_copper_loss_and_less_assumed_flux():
     hot = m.at_temperature(100, cold)
     assert hot.resistance_ohm > cold.resistance_ohm
     assert hot.flux_wb < cold.flux_wb
+
+
+def test_stationary_mtpa_matches_independent_bounded_minimization():
+    for torque in (-100, -30, 0, 30, 100):
+        direct = m.mtpa_stationary(torque)
+        assert m.torque(direct) == pytest.approx(torque, abs=1e-9)
+        assert np.allclose(direct, m.mtpa(torque), atol=1e-4)
