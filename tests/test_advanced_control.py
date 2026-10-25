@@ -24,3 +24,10 @@ def test_rls_recovers_resistance_and_skips_unexcited_samples():
         r.update(i, 0.064 * i)
     assert r.value == pytest.approx(0.064, rel=1e-4)
     assert r.covariance > 0
+
+
+def test_jerk_limiter_respects_per_step_acceleration_change():
+    r = m.JerkLimiter()
+    hist = np.array([r.update(20, 0.1) for _ in range(100)])
+    assert np.max(abs(np.diff(hist[:, 1]))) <= 0.10000001
+    assert np.max(abs(hist[:, 1])) <= 2

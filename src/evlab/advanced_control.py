@@ -56,3 +56,20 @@ class ResistanceRLS:
         self.value = candidate
         self.covariance = (self.covariance - gain * current_a * self.covariance) / self.forgetting
         return True
+
+
+class JerkLimiter:
+    def __init__(self, acceleration_m_s2=2, jerk_m_s3=1):
+        self.maximum = positive(acceleration_m_s2)
+        self.jerk = positive(jerk_m_s3)
+        self.speed = 0.0
+        self.acceleration = 0.0
+
+    def update(self, target_m_s, dt_s):
+        dt = positive(dt_s)
+        if target_m_s < 0 or not np.isfinite(target_m_s):
+            raise ValueError("forward finite target required")
+        desired = np.clip((target_m_s - self.speed) / dt, -self.maximum, self.maximum)
+        self.acceleration += np.clip(desired - self.acceleration, -self.jerk * dt, self.jerk * dt)
+        self.speed = max(0.0, self.speed + self.acceleration * dt)
+        return self.speed, self.acceleration
