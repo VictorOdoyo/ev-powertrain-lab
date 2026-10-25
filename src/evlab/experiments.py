@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 CASES = {
+    "road-load-uncertainty": ["studies_bench", "energy_uncertainty", "Conditional road-load ensemble"],
+    "observer-outlier-gate": ["studies_bench", "observer_gate", "Gated voltage outlier rejection"],
     "urban-drive": ["studies_drive", "urban", "Forward urban drive"],
     "highway-drive": ["studies_drive", "highway", "Voltage-limited highway motion"],
     "hill-drive": ["studies_drive", "hill", "Road grade and electrical load"],
@@ -69,6 +71,17 @@ def run(config, progress=None):
     result = getattr(import_module("evlab." + module), function)(
         scale=config.resolution_scale, seed=config.seed
     )
+    from dataclasses import asdict
+
+    from .battery import Pack
+    from .motor import PMSM
+    from .vehicle import Vehicle
+
+    result["parameters"]["model_defaults"] = {
+        "motor": asdict(PMSM()),
+        "pack": asdict(Pack()),
+        "vehicle": asdict(Vehicle()),
+    }
     validate(result)
     if result["name"] != config.case:
         raise ValueError("study returned a different case name")
