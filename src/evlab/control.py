@@ -102,3 +102,15 @@ def slew(previous, target, rate_nm_s, dt_s):
     if not np.isfinite(previous + target):
         raise ValueError("finite torque commands required")
     return float(previous + np.clip(target - previous, -maximum, maximum))
+
+
+def encoder(angle_mechanical_rad, counts=4096, pole_pairs=4):
+    from .core import finite, integer
+    from .transforms import wrap
+
+    angle = finite(angle_mechanical_rad, real=True)
+    integer(counts, 4)
+    integer(pole_pairs)
+    code = np.rint(angle / (2 * np.pi) * counts).astype(np.int64) % counts
+    mechanical = code * 2 * np.pi / counts
+    return {"counts": code, "mechanical_rad": mechanical, "electrical_rad": wrap(mechanical * pole_pairs)}

@@ -51,3 +51,12 @@ def test_adc_error_is_bounded_and_clipping_is_explicit():
 def test_torque_slew_is_time_based_not_sample_count_based():
     assert m.slew(0, 100, 1000, 0.01) == 10
     assert m.slew(0, -100, 1000, 0.01) == -10
+
+
+def test_encoder_error_scales_with_pole_pairs():
+    from evlab.transforms import wrap
+
+    angles = np.linspace(-10, 10, 1000)
+    result = m.encoder(angles, 4096, 4)
+    error = wrap(result["electrical_rad"] - 4 * angles)
+    assert np.max(abs(error)) <= 4 * np.pi / 4096 + 1e-12
