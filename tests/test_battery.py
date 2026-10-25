@@ -25,3 +25,12 @@ def test_ocv_jacobian_matches_central_difference():
 def test_battery_discharge_reduces_and_charge_raises_terminal_voltage():
     assert m.terminal_voltage(0.7, 0, 100) < m.ocv(0.7)
     assert m.terminal_voltage(0.7, 0, -100) > m.ocv(0.7)
+
+
+def test_held_battery_step_matches_coulomb_and_rc_solutions():
+    p = m.Pack()
+    x = m.step([0.8, 0], 100, 30, p)
+    assert x[0] == pytest.approx(0.8 - 3000 / p.capacity_c)
+    assert x[1] == pytest.approx(p.r1 * 100 * (1 - np.exp(-1)))
+    with pytest.raises(ValueError):
+        m.step([0, 0], 1, 1, p)

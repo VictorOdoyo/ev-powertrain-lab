@@ -72,3 +72,19 @@ def terminal_voltage(soc, polarization_v, current_a, temperature_c=25.0, model=N
     current = finite(current_a, real=True)
     vp = finite(polarization_v, real=True)
     return ocv(soc, temperature_c, p) - vp - p.r0 * current
+
+
+def step(state, current_a, dt_s, model=None, charge_efficiency=0.995):
+    from .core import finite, positive
+
+    p = Pack() if model is None else model
+    x = finite(state, real=True)
+    if x.shape != (2,) or not np.isfinite(current_a) or not 0 < charge_efficiency <= 1:
+        raise ValueError("SOC polarization state finite current and efficiency required")
+    dt = positive(dt_s)
+    effective = current_a if current_a >= 0 else current_a * charge_efficiency
+    soc = x[0] - effective * dt / p.capacity_c
+    if not 0 <= soc <= 1:
+        raise ValueError("step would cross SOC boundary")
+    decay = np.exp(-dt / (p.r1 * p.c1))
+    return np.array([soc, decay * x[1] + p.r1 * current_a * (1 - decay)])
