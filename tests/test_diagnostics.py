@@ -24,3 +24,11 @@ def test_current_sum_detects_one_biased_sensor_without_fault_truth():
     healthy = np.array([100, -40, -60.0])
     assert not m.current_sum(healthy)["alarm"]
     assert m.current_sum(healthy + np.array([10, 0, 0]))["alarm"]
+
+
+def test_innovation_monitor_requires_persistent_measurement_inconsistency():
+    monitor = m.InnovationMonitor(dwell_s=0.3)
+    assert not monitor.update(20, 0.1)
+    assert not monitor.update(20, 0.1)
+    assert monitor.update(20, 0.1)
+    assert not monitor.update(0, 0.1)

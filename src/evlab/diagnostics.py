@@ -45,3 +45,21 @@ def current_sum(phase_current_a, noise_std_a=0.5, threshold_sigma=5.0):
         "normalized": normalized,
         "alarm": abs(normalized) > positive(threshold_sigma),
     }
+
+
+class InnovationMonitor:
+    def __init__(self, threshold=9.0, dwell_s=0.5):
+        from .core import positive
+
+        self.threshold = positive(threshold)
+        self.dwell = positive(dwell_s)
+        self.elapsed = 0.0
+
+    def update(self, nis, dt_s, valid=True):
+        from .core import positive
+
+        dt = positive(dt_s)
+        if not np.isfinite(nis) or nis < 0:
+            raise ValueError("nonnegative normalized innovation required")
+        self.elapsed = self.elapsed + dt if valid and nis > self.threshold else 0.0
+        return self.elapsed >= self.dwell - 1e-12
