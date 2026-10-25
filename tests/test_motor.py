@@ -68,3 +68,11 @@ def test_mtpa_has_less_current_than_id_zero_for_same_torque():
     current = m.mtpa(80, p)
     assert m.torque(current, p) == pytest.approx(80)
     assert np.linalg.norm(current) < 80 / (1.5 * p.pole_pairs * p.flux_wb)
+
+
+def test_torque_capability_agrees_with_dense_independent_circle_search():
+    p = m.PMSM()
+    angle = np.linspace(np.pi / 2, np.pi, 10001)
+    currents = np.column_stack((p.current_limit_a * np.cos(angle), p.current_limit_a * np.sin(angle)))
+    result = m.torque_capability(p)
+    assert result["maximum_nm"] == pytest.approx(np.max(m.torque(currents, p)), rel=1e-7)

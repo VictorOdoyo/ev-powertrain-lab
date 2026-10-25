@@ -163,3 +163,19 @@ def mtpa(torque_nm, model=None):
     if np.linalg.norm(candidate) > p.current_limit_a * (1 + 1e-8):
         raise ValueError("requested torque exceeds current-limited MTPA capability")
     return candidate
+
+
+def torque_capability(model=None):
+    from scipy.optimize import minimize_scalar
+
+    p = PMSM() if model is None else model
+
+    def operating(id_value):
+        return float(torque([id_value, np.sqrt(max(0, p.current_limit_a**2 - id_value**2))], p))
+
+    fit = minimize_scalar(lambda value: -operating(value), bounds=(-p.current_limit_a, 0), method="bounded")
+    return {
+        "maximum_nm": operating(fit.x),
+        "id_a": float(fit.x),
+        "iq_a": float(np.sqrt(p.current_limit_a**2 - fit.x**2)),
+    }
