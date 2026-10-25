@@ -22,3 +22,21 @@ def pack_impedance(frequency_hz, model=None):
     if np.any(f < 0):
         raise ValueError("nonnegative impedance frequencies required")
     return p.r0 + p.r1 / (1 + 2j * np.pi * f * p.r1 * p.c1)
+
+
+def fit_impedance(frequency_hz, impedance_ohm):
+    from scipy.optimize import least_squares
+
+    f = finite(frequency_hz, real=True, ndim=1)
+    z = finite(impedance_ohm, ndim=1)
+    if z.shape != f.shape or len(f) < 5 or np.any(f <= 0) or np.ptp(np.log(f)) < 1:
+        raise ValueError("broadband positive-frequency impedance record required")
+
+    def residual(logp):
+        r0, r1, tau = np.exp(logp)
+        error = r0 + r1 / (1 + 2j * np.pi * f * tau) - z
+        return np.r_[error.real, error.imag]
+
+    fit = least_squares(residual, np.log([max(min(z.real), 1e-6), max(np.ptp(z.real), 1e-6), 1.0]))
+    r0, r1, tau = np.exp(fit.x)
+    return {"r0_ohm": r0, "r1_ohm": r1, "tau_s": tau, "rms_ohm": float(np.sqrt(np.mean(fit.fun**2)))}
