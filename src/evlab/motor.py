@@ -142,3 +142,24 @@ def coupled_step(state, voltage, load_nm, dt_s, model=None):
     if not np.all(np.isfinite(result)):
         raise RuntimeError("nonfinite motor integration")
     return result
+
+
+def mtpa(torque_nm, model=None):
+    from scipy.optimize import minimize_scalar
+
+    p = PMSM() if model is None else model
+    if not np.isfinite(torque_nm):
+        raise ValueError("finite torque request required")
+
+    def iq(id_value):
+        return torque_nm / (1.5 * p.pole_pairs * (p.flux_wb + (p.ld_h - p.lq_h) * id_value))
+
+    if p.ld_h > p.lq_h:
+        raise ValueError("this MTPA branch requires Ld<=Lq")
+    fit = minimize_scalar(
+        lambda id_value: id_value**2 + iq(id_value) ** 2, bounds=(-p.current_limit_a, 0), method="bounded"
+    )
+    candidate = np.array([fit.x, iq(fit.x)])
+    if np.linalg.norm(candidate) > p.current_limit_a * (1 + 1e-8):
+        raise ValueError("requested torque exceeds current-limited MTPA capability")
+    return candidate

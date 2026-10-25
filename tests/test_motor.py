@@ -61,3 +61,10 @@ def test_motor_energy_has_correct_current_and_speed_derivatives():
 def test_coupled_motor_rotates_and_accelerates_from_q_current():
     x = m.coupled_step([0, 100, 0, 0], [0, 4], 0, 1e-5)
     assert x[2] > 0 and x[3] > 0
+
+
+def test_mtpa_has_less_current_than_id_zero_for_same_torque():
+    p = m.PMSM()
+    current = m.mtpa(80, p)
+    assert m.torque(current, p) == pytest.approx(80)
+    assert np.linalg.norm(current) < 80 / (1.5 * p.pole_pairs * p.flux_wb)
