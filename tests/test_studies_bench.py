@@ -57,3 +57,8 @@ def test_observer_study_rejects_large_voltage_outliers():
     r = m.observer_gate()
     a = r["arrays"]
     assert not np.any(a["accepted"][(a["time_s"] > 10) & (a["time_s"] < 11)])
+
+
+def test_thermal_conservation_axis_retains_physical_energy_scale():
+    r = m.thermal_network()
+    assert r["plots"][1]["ylim"][0] == 0

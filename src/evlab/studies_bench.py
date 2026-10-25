@@ -237,7 +237,7 @@ def thermal_network(scale=1, seed=42):
         "sink_c": hist[:, 2],
         "energy_j": hist @ cap,
     }
-    return lines(
+    result = lines(
         "thermal-network",
         {"capacities_j_k": cap.tolist(), "edges_w_k": [20, 10]},
         {"maximum_energy_drift_j": float(np.max(abs(a["energy_j"] - a["energy_j"][0])))},
@@ -259,6 +259,8 @@ def thermal_network(scale=1, seed=42):
             ),
         ],
     )
+    result["plots"][1]["ylim"] = [0, float(a["energy_j"][0]) * 1.1]
+    return result
 
 
 def modulation(scale=1, seed=42):
