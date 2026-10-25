@@ -83,6 +83,8 @@ def step(state, current_a, dt_s, model=None, charge_efficiency=0.995):
     x = finite(state, real=True)
     if x.shape != (2,) or not np.isfinite(current_a) or not 0 < charge_efficiency <= 1:
         raise ValueError("SOC polarization state finite current and efficiency required")
+    if not 0 <= x[0] <= 1:
+        raise ValueError("initial SOC outside physical range")
     dt = positive(dt_s)
     effective = current_a if current_a >= 0 else current_a * charge_efficiency
     soc = x[0] - effective * dt / p.capacity_c

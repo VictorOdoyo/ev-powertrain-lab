@@ -88,3 +88,8 @@ def test_battery_thermodynamics_reject_absolute_zero(temperature):
         m.ocv(0.5, temperature)
     with pytest.raises(ValueError):
         m.aging_increment(1, temperature, 1)
+
+
+def test_battery_step_cannot_reenter_from_invalid_initial_soc():
+    with pytest.raises(ValueError):
+        m.step([1.01, 0], 10000, 1)
