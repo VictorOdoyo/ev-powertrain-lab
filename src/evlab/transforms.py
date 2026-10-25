@@ -18,3 +18,14 @@ def inverse_clarke(ab0):
     if v.shape[-1] != 3:
         raise ValueError("alpha beta zero coordinates required")
     return v @ np.array([[1, 0, 1], [-0.5, np.sqrt(3) / 2, 1], [-0.5, -np.sqrt(3) / 2, 1]]).T
+
+
+def park(ab, theta):
+    from .core import finite
+
+    v = finite(ab, real=True)
+    angle = finite(theta, real=True)
+    if v.shape[-1] != 2:
+        raise ValueError("two stationary coordinates required")
+    c, s = np.cos(angle), np.sin(angle)
+    return np.stack((c * v[..., 0] + s * v[..., 1], -s * v[..., 0] + c * v[..., 1]), axis=-1)
