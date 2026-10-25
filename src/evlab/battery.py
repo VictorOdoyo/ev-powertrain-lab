@@ -57,3 +57,9 @@ def ocv(soc, temperature_c=25.0, model=None):
     if np.any((z < 0) | (z > 1)):
         raise ValueError("SOC outside [0,1]")
     return p.series * (3.1 + 1.0 * z + 0.06 * np.tanh(10 * (z - 0.5)) - 0.0002 * (t - 25))
+
+
+def ocv_jacobian(soc, model=None):
+    p = Pack() if model is None else model
+    ocv(soc, model=p)
+    return p.series * (1 + 0.6 / np.cosh(10 * (np.asarray(soc) - 0.5)) ** 2)
