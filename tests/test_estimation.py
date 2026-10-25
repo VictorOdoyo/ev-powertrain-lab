@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from evlab import estimation as m
 
@@ -30,3 +31,12 @@ def test_battery_estimator_converges_from_soc_error_using_only_voltage_and_curre
         truth = step(truth, current, 1)
         observer.update(float(terminal_voltage(truth[0], truth[1], current)), current, 1)
     assert abs(observer.state[0] - truth[0]) < 0.003
+
+
+def test_pulse_resistance_recovers_pack_r0_before_polarization_changes():
+    from evlab.battery import Pack, terminal_voltage
+
+    p = Pack()
+    before = float(terminal_voltage(0.8, 0, 0, model=p))
+    after = float(terminal_voltage(0.8, 0, 100, model=p))
+    assert m.pulse_resistance(before, after, 0, 100) == pytest.approx(p.r0)

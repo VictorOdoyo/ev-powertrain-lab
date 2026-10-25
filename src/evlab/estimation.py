@@ -73,3 +73,20 @@ class BatteryEKF:
         self.state = result["state"].copy()
         self.covariance = result["covariance"].copy()
         return result
+
+
+def pulse_resistance(
+    before_voltage_v, after_voltage_v, before_current_a, after_current_a, minimum_step_a=5.0
+):
+    from .core import positive
+
+    values = np.array([before_voltage_v, after_voltage_v, before_current_a, after_current_a])
+    if not np.all(np.isfinite(values)):
+        raise ValueError("finite pulse samples required")
+    change = after_current_a - before_current_a
+    if abs(change) < positive(minimum_step_a):
+        raise ValueError("pulse current step is unobservable")
+    resistance = -(after_voltage_v - before_voltage_v) / change
+    if resistance <= 0:
+        raise ValueError("pulse edge implies nonphysical resistance")
+    return resistance
