@@ -18,3 +18,9 @@ def test_identification_recovers_excited_motor_without_assuming_known_flux():
     assert result["ld_h"] == pytest.approx(p.ld_h)
     assert result["lq_h"] == pytest.approx(p.lq_h)
     assert result["flux_wb"] == pytest.approx(p.flux_wb)
+
+
+def test_current_sum_detects_one_biased_sensor_without_fault_truth():
+    healthy = np.array([100, -40, -60.0])
+    assert not m.current_sum(healthy)["alarm"]
+    assert m.current_sum(healthy + np.array([10, 0, 0]))["alarm"]

@@ -30,3 +30,18 @@ def identify_motor(current, derivative, voltage, omega_m, pole_pairs=4):
         "rms_residual_v": float(np.sqrt(np.mean(residual**2))),
         "scaled_condition": float(np.linalg.cond(normalized)),
     }
+
+
+def current_sum(phase_current_a, noise_std_a=0.5, threshold_sigma=5.0):
+    from .core import finite, positive
+
+    i = finite(phase_current_a, real=True)
+    if i.shape[-1] != 3:
+        raise ValueError("three phase sensors required")
+    residual = np.sum(i, axis=-1)
+    normalized = residual / (np.sqrt(3) * positive(noise_std_a))
+    return {
+        "residual_a": residual,
+        "normalized": normalized,
+        "alarm": abs(normalized) > positive(threshold_sigma),
+    }
