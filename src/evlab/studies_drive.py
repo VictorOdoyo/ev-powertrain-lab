@@ -101,3 +101,9 @@ def full_pack(scale=1, seed=42):
 
 def hot_pack(scale=1, seed=42):
     return study("hot-pack-shutdown", Config(dt_s=0.2 / scale, duration_s=10, battery_c=65, seed=seed))
+
+
+def biased(scale=1, seed=42):
+    return study(
+        "biased-current-observer", Config(dt_s=0.2 / scale, duration_s=20, current_bias_a=8, seed=seed)
+    )

@@ -35,3 +35,8 @@ def test_hot_pack_blocks_traction():
     r = m.hot_pack()
     assert r["summary"]["distance_m"] == 0
     assert np.all(r["arrays"]["battery_current_a"] == 0)
+
+
+def test_observer_study_records_sensor_bias():
+    r = m.biased()
+    assert r["parameters"]["replay"]["current_bias_a"] == 8
