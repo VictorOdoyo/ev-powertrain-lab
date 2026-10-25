@@ -99,3 +99,59 @@ def operating_point(
             }
         bus = (bus + voltage) / 2
     raise ValueError("power request cannot satisfy battery current and voltage envelope")
+
+
+def vehicle_step(
+    speed_m_s,
+    force_request_n,
+    battery_state,
+    dt_s,
+    grade=0.0,
+    temperature_battery_c=25.0,
+    temperature_motor_c=25.0,
+    auxiliary_w=300.0,
+    vehicle_model=None,
+    battery_model=None,
+    motor_model=None,
+):
+    from .core import positive
+    from .vehicle import Vehicle, motor_torque, road_forces, wheel_force
+
+    p = Vehicle() if vehicle_model is None else vehicle_model
+    dt = positive(dt_s)
+    speed = float(speed_m_s)
+    if speed < 0 or not np.isfinite(force_request_n):
+        raise ValueError("forward speed and finite force request required")
+    road = float(road_forces(speed, grade, model=p)["total_n"])
+    requested = max(force_request_n, road - p.effective_mass * speed / dt)
+    next_speed = max(0.0, speed + (requested - road) * dt / p.effective_mass)
+    for _ in range(5):
+        midpoint = (speed + next_speed) / 2
+        point = operating_point(
+            float(motor_torque(requested, midpoint, p)),
+            midpoint * p.gear / p.wheel_radius_m,
+            battery_state,
+            dt,
+            temperature_battery_c,
+            temperature_motor_c,
+            auxiliary_w,
+            battery_model,
+            motor_model,
+        )
+        motor_force = float(wheel_force(point["torque_nm"], midpoint, p))
+        friction = min(15000.0, max(0.0, motor_force - requested)) if requested < 0 else 0.0
+        force = motor_force - friction
+        road = float(road_forces(midpoint, grade, model=p)["total_n"])
+        next_speed = max(0.0, speed + (force - road) * dt / p.effective_mass)
+    midpoint = (speed + next_speed) / 2
+    mechanical_work = (force - road) * midpoint * dt
+    kinetic = 0.5 * p.effective_mass * (next_speed**2 - speed**2)
+    return {
+        **point,
+        "speed_m_s": next_speed,
+        "wheel_force_n": force,
+        "friction_n": friction,
+        "road_force_n": road,
+        "distance_m": midpoint * dt,
+        "mechanical_defect_j": kinetic - mechanical_work,
+    }
