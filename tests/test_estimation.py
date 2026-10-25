@@ -51,3 +51,10 @@ def test_relaxation_fit_estimates_unknown_offset_amplitude_and_tau():
 
 def test_capacity_estimate_uses_coulomb_throughput_and_soc_excursion():
     assert m.capacity_from_excursion([0, 3600], [30, 30], 0.8, 0.6) == pytest.approx(150)
+
+
+def test_observer_rejects_asymmetric_covariance_and_negative_noise():
+    with pytest.raises(ValueError):
+        m.predict([0.5, 0], [[1, 0.2], [0, 1]], 0, 1)
+    with pytest.raises(ValueError):
+        m.predict([0.5, 0], np.eye(2), 0, 1, process_std=(-1, 0.1))
