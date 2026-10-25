@@ -33,3 +33,12 @@ def park(ab, theta):
 
 def inverse_park(dq, theta):
     return park(dq, -np.asarray(theta))
+
+
+def dq_power(voltage, current):
+    from .core import finite
+
+    v, i = np.broadcast_arrays(finite(voltage, real=True), finite(current, real=True))
+    if v.shape[-1] != 2:
+        raise ValueError("d-q vectors required")
+    return 1.5 * np.sum(v * i, axis=-1)

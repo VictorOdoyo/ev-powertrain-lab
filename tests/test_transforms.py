@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from evlab import transforms as m
 
@@ -22,3 +23,9 @@ def test_inverse_park_roundtrip():
     angle = np.linspace(-3, 3, 20)
     v = np.column_stack((np.ones(20) * 2, np.ones(20) * 3))
     assert np.allclose(m.inverse_park(m.park(v, angle), angle), v)
+
+
+def test_dq_power_equals_phase_sum_for_balanced_signals():
+    abc = np.array([100, -30, -70.0])
+    current = np.array([5, 2, -7.0])
+    assert m.dq_power(m.clarke(abc)[:2], m.clarke(current)[:2]) == pytest.approx(abc @ current)
