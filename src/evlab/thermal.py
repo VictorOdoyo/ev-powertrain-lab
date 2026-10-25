@@ -22,7 +22,7 @@ def network(capacities, edges, ambient_conductance):
         raise ValueError("positive capacities and nonnegative conductances required")
     k = np.diag(g)
     for a, b, value in edges:
-        if a == b or not 0 <= a < len(c) or not 0 <= b < len(c) or value < 0:
+        if a == b or not 0 <= a < len(c) or not 0 <= b < len(c) or not np.isfinite(value) or value < 0:
             raise ValueError("valid thermal edge required")
         k[a, a] += value
         k[b, b] += value

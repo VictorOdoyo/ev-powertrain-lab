@@ -35,3 +35,8 @@ def test_thermostat_dwell_prevents_cooling_chatter():
     assert t.update(0, 46)
     assert t.update(1, 30)
     assert not t.update(5, 30)
+
+
+def test_thermal_network_rejects_nan_conductance():
+    with pytest.raises(ValueError):
+        m.network([1, 2], [(0, 1, np.nan)], [0, 0])
