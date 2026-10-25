@@ -70,7 +70,26 @@ def operating_point(
 
     p = Pack() if battery_model is None else battery_model
     z, vp = battery_state
-    limits = current_limits(battery_state, dt_s, temperature_battery_c, p)
+    from .charging import thermal_current_limit
+    from .thermal import derate
+
+    hardware = 300 * float(derate(temperature_battery_c, 45.0, 60.0))
+    limits = current_limits(battery_state, dt_s, temperature_battery_c, p, hardware)
+    limits["charge_a"] = min(limits["charge_a"], thermal_current_limit(temperature_battery_c))
+    if limits["discharge_a"] == 0 and limits["charge_a"] == 0:
+        return {
+            "torque_nm": 0.0,
+            "current_dq_a": np.zeros(2),
+            "copper_w": 0.0,
+            "inverter_w": 0.0,
+            "ac_w": 0.0,
+            "dc_w": 0.0,
+            "limited": True,
+            "battery_current_a": 0.0,
+            "battery_power_w": 0.0,
+            "bus_voltage_v": 0.0,
+            "bus_residual_v": 0.0,
+        }
     bus = float(ocv(z, temperature_battery_c, p) - vp)
     command = float(torque_request_nm)
     auxiliary = positive(auxiliary_w, allow_zero=True)

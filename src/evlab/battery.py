@@ -122,7 +122,7 @@ def current_limits(state, dt_s, temperature_c=25.0, model=None, hardware_a=300.0
     p = Pack() if model is None else model
     z, vp = state
     dt = positive(dt_s)
-    ceiling = positive(hardware_a)
+    ceiling = positive(hardware_a, allow_zero=True)
     available = float(ocv(z, temperature_c, p) - vp)
     discharge = min(ceiling, max(0, (available - p.series * p.minimum_cell_v) / p.r0), z * p.capacity_c / dt)
     charge = min(

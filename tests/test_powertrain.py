@@ -24,3 +24,10 @@ def test_vehicle_step_achieves_less_force_when_drive_torque_is_infeasible():
     assert 0 < result["wheel_force_n"] < 20000
     assert result["speed_m_s"] > 0
     assert abs(result["mechanical_defect_j"]) < 1
+
+
+def test_cold_charge_and_overheated_pack_do_not_force_battery_current():
+    cold = m.operating_point(-50, 300, [0.8, 0], 0.2, temperature_battery_c=-5)
+    assert cold["battery_current_a"] >= -1e-8
+    hot = m.operating_point(80, 300, [0.8, 0], 0.2, temperature_battery_c=65)
+    assert hot["battery_current_a"] == 0 and hot["torque_nm"] == 0
