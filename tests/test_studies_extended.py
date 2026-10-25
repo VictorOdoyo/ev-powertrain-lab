@@ -16,3 +16,8 @@ def test_precharge_study_closes_accumulated_energy():
 def test_tire_envelope_reaches_zero_longitudinal_headroom():
     r = m.tire_envelope()
     assert r["arrays"]["longitudinal_n"][-1] == 0
+
+
+def test_resistance_tracking_study_recovers_truth():
+    r = m.resistance_tracking()
+    assert r["summary"]["final_resistance_ohm"] == pytest.approx(0.064, abs=0.0001)

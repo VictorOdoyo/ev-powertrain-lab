@@ -97,3 +97,29 @@ def tire_envelope(scale=1, seed=42):
         "Lateral force (N)",
         "Longitudinal force (N)",
     )
+
+
+def resistance_tracking(scale=1, seed=42):
+    from .advanced_control import ResistanceRLS
+    from .core import stream
+
+    n = 300 * scale
+    r = ResistanceRLS(0.1)
+    current = np.tile([10.0, -30, 50, -100], n // 4 + 1)[:n]
+    noise = stream(seed, "rls-voltage").normal(0, 0.01, n)
+    estimate = []
+    for i, v in zip(current, 0.064 * current + noise, strict=True):
+        r.update(i, v)
+        estimate.append(r.value)
+    a = {"sample": np.arange(n), "estimate_ohm": estimate, "reference_ohm": np.full(n, 0.064)}
+    return output(
+        "online-resistance",
+        {"seed": seed, "noise_std_v": 0.01, "forgetting": 0.999},
+        {"final_resistance_ohm": r.value},
+        a,
+        "Excited scalar RLS",
+        "sample",
+        [("estimate_ohm", "Estimate"), ("reference_ohm", "Truth")],
+        "Sample",
+        "Resistance (ohm)",
+    )
