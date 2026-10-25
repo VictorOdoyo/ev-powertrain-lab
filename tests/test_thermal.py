@@ -18,3 +18,7 @@ def test_coupled_thermal_step_conserves_energy_without_ambient():
     old = np.array([100.0, 0.0])
     new = m.network_step(old, [0, 0], 25, 10, net)
     assert new @ net["capacity"] == pytest.approx(old @ net["capacity"])
+
+
+def test_thermal_derating_has_bounded_linear_transition():
+    assert np.allclose(m.derate([60, 80, 95, 110, 120]), [1, 1, 0.5, 0, 0])

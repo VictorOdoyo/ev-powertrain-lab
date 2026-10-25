@@ -46,3 +46,11 @@ def network_step(temperature, heat_w, ambient_c, dt_s, model):
     aug[:n, :n] = -k / c[:, None]
     aug[:n, n] = (q + g * ambient_c) / c
     return (expm(aug * positive(dt_s)) @ np.r_[t, 1])[:n]
+
+
+def derate(temperature_c, onset_c=80.0, shutdown_c=110.0):
+    from .core import finite
+
+    if not np.isfinite(onset_c + shutdown_c) or onset_c >= shutdown_c:
+        raise ValueError("ordered thermal limits required")
+    return np.clip((shutdown_c - finite(temperature_c, real=True)) / (shutdown_c - onset_c), 0, 1)
