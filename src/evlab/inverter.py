@@ -37,3 +37,16 @@ def switching(time_s, duty, switch_hz=10000):
     phase = (t * positive(switch_hz)) % 1
     carrier = 1 - abs(2 * phase - 1)
     return carrier[..., None] < d
+
+
+def deadtime_error(phase_current_a, dc_voltage_v, deadtime_s, switch_hz):
+    from .core import finite, positive
+
+    i = finite(phase_current_a, real=True)
+    if i.shape[-1] != 3:
+        raise ValueError("three phase currents required")
+    fraction = positive(deadtime_s, allow_zero=True) * positive(switch_hz)
+    if fraction >= 0.5:
+        raise ValueError("deadtime exceeds half switching period")
+    error = -np.sign(i) * positive(dc_voltage_v) * fraction
+    return error - np.mean(error, axis=-1, keepdims=True)

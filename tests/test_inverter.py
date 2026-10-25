@@ -24,3 +24,10 @@ def test_switching_average_matches_commanded_duty():
     t = (np.arange(10000) + 0.5) / 1e8
     duty = np.array([0.2, 0.5, 0.8])
     assert np.allclose(np.mean(m.switching(t, duty), axis=0), duty, atol=2e-4)
+
+
+def test_deadtime_error_is_current_odd_and_common_mode_free():
+    current = np.array([10.0, -8.0, -2.0])
+    error = m.deadtime_error(current, 400, 1e-6, 10000)
+    assert np.allclose(m.deadtime_error(-current, 400, 1e-6, 10000), -error)
+    assert abs(sum(error)) < 1e-12
