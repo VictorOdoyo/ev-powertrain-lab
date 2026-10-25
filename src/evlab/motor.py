@@ -214,3 +214,16 @@ def current_reference(torque_nm, omega_m, dc_voltage_v, model=None):
     if not feasible:
         raise ValueError("torque request infeasible under current and voltage limits")
     return i
+
+
+def at_temperature(temperature_c, model=None, copper_alpha=0.00393, magnet_alpha=-0.001):
+    from dataclasses import replace
+
+    p = PMSM() if model is None else model
+    if not np.isfinite(temperature_c) or temperature_c <= -273.15:
+        raise ValueError("physical temperature required")
+    return replace(
+        p,
+        resistance_ohm=p.resistance_ohm * (1 + copper_alpha * (temperature_c - 25)),
+        flux_wb=p.flux_wb * (1 + magnet_alpha * (temperature_c - 25)),
+    )

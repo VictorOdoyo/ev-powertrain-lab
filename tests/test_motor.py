@@ -84,3 +84,10 @@ def test_field_weakening_satisfies_voltage_and_current_ellipse():
     assert current[0] < -30
     assert abs(m.torque(current, p) - 40) < 1e-5
     assert np.linalg.norm(m.steady_voltage(current, 900, p)) <= 400 / np.sqrt(3) + 1e-5
+
+
+def test_hot_motor_has_more_copper_loss_and_less_assumed_flux():
+    cold = m.PMSM()
+    hot = m.at_temperature(100, cold)
+    assert hot.resistance_ohm > cold.resistance_ohm
+    assert hot.flux_wb < cold.flux_wb
