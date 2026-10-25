@@ -146,3 +146,35 @@ def field_weakening(scale=1, seed=42):
         plots,
         assumptions=["Unattainable speeds masked rather than plotted as zero current."],
     )
+
+
+def mtpa_curve(scale=1, seed=42):
+    from .motor import PMSM, mtpa, mtpa_stationary
+
+    p = PMSM()
+    t = np.linspace(-140, 140, 81 * scale)
+    i = np.array([mtpa_stationary(x, p) for x in t])
+    ref = np.array([mtpa(x, p) for x in t])
+    a = {"torque_nm": t, "id_a": i[:, 0], "iq_a": i[:, 1], "error_a": np.linalg.norm(i - ref, axis=1)}
+    return lines(
+        "mtpa-reference",
+        {"current_limit_a": p.current_limit_a},
+        {"maximum_independent_error_a": float(max(a["error_a"]))},
+        a,
+        [
+            (
+                "Minimum-current locus",
+                "torque_nm",
+                [("id_a", "d"), ("iq_a", "q")],
+                "Torque (Nm)",
+                "Peak current (A)",
+            ),
+            (
+                "Independent optimizer residual",
+                "torque_nm",
+                [("error_a", "Current vector error")],
+                "Torque (Nm)",
+                "Error (A)",
+            ),
+        ],
+    )

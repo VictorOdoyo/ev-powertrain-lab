@@ -23,3 +23,8 @@ def test_field_weakening_study_marks_infeasible_speed():
     a = r["arrays"]
     assert a["valid"][0] and not a["valid"][-1]
     assert max(a["voltage_v"]) <= 350 / np.sqrt(3) + 1e-5
+
+
+def test_mtpa_study_compares_independent_solvers():
+    r = m.mtpa_curve()
+    assert r["summary"]["maximum_independent_error_a"] < 1e-4
