@@ -45,3 +45,10 @@ def precharge(bus_v, link_v, resistance_ohm, capacitance_f, dt_s):
         "stored_j": stored,
         "defect_j": source - stored - heat,
     }
+
+
+def dc_link_energy(voltage_before_v, voltage_after_v, capacitance_f):
+    c = positive(capacitance_f)
+    if not np.isfinite(voltage_before_v + voltage_after_v) or min(voltage_before_v, voltage_after_v) < 0:
+        raise ValueError("finite nonnegative voltage endpoints required")
+    return 0.5 * c * (voltage_after_v**2 - voltage_before_v**2)

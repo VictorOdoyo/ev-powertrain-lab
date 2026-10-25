@@ -18,3 +18,8 @@ def test_precharge_energy_closes_and_link_approaches_bus():
     a = m.precharge(400, 0, 100, 0.002, 1)
     assert 390 < a["link_v"] < 400
     assert abs(a["defect_j"]) < 1e-10
+
+
+def test_dc_link_energy_changes_sign_when_endpoints_reverse():
+    assert m.dc_link_energy(300, 400, 0.002) == 70
+    assert m.dc_link_energy(400, 300, 0.002) == -70
