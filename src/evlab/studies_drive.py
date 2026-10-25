@@ -85,3 +85,7 @@ def urban(scale=1, seed=42):
 
 def highway(scale=1, seed=42):
     return study("highway-drive", Config(cycle="highway", dt_s=0.2 / scale, duration_s=40, seed=seed))
+
+
+def hill(scale=1, seed=42):
+    return study("hill-drive", Config(cycle="hill", dt_s=0.2 / scale, duration_s=40, seed=seed))

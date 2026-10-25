@@ -1,3 +1,5 @@
+import numpy as np
+
 from evlab import studies_drive as m
 
 
@@ -11,3 +13,8 @@ def test_urban_study_reports_achieved_energy_and_masked_startup():
 def test_highway_study_has_finite_energy():
     r = m.highway()
     assert r["summary"]["net_battery_wh"] > 0
+
+
+def test_hill_study_preserves_grade():
+    r = m.hill()
+    assert np.max(r["arrays"]["grade"]) > 0.06
