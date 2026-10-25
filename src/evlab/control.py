@@ -21,3 +21,10 @@ class PI:
         applied = float(np.clip(raw, -self.limit, self.limit))
         self.integral += dt * (self.ki * error + (applied - raw) / self.tracking)
         return applied
+
+
+def current_gains(model, bandwidth_hz=500.0):
+    from .core import positive
+
+    omega = 2 * np.pi * positive(bandwidth_hz)
+    return {"kp": omega * np.array([model.ld_h, model.lq_h]), "ki": omega * model.resistance_ohm}
