@@ -28,3 +28,10 @@ def test_pump_affinity_is_not_confused_with_heat_transfer_scaling():
     half = m.coolant(0.5)
     assert half["pump_w"] == pytest.approx(37.5)
     assert half["conductance_w_k"] > 50
+
+
+def test_thermostat_dwell_prevents_cooling_chatter():
+    t = m.Thermostat()
+    assert t.update(0, 46)
+    assert t.update(1, 30)
+    assert not t.update(5, 30)

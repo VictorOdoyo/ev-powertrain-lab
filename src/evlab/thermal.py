@@ -65,3 +65,26 @@ def coolant(flow_fraction, maximum_conductance_w_k=100.0, maximum_pump_w=300.0):
         "conductance_w_k": positive(maximum_conductance_w_k) * flow_fraction**0.8,
         "pump_w": positive(maximum_pump_w) * flow_fraction**3,
     }
+
+
+class Thermostat:
+    def __init__(self, on_c=45.0, off_c=40.0, minimum_dwell_s=5.0):
+        from .core import positive
+
+        if off_c >= on_c:
+            raise ValueError("hysteresis temperatures required")
+        self.on_c, self.off_c = on_c, off_c
+        self.dwell = positive(minimum_dwell_s)
+        self.on = False
+        self.changed = -np.inf
+        self.time = -np.inf
+
+    def update(self, time_s, temperature_c):
+        if not np.isfinite(time_s + temperature_c) or time_s < self.time:
+            raise ValueError("monotone finite thermal clock required")
+        self.time = time_s
+        target = temperature_c > self.on_c if not self.on else temperature_c > self.off_c
+        if target != self.on and time_s - self.changed >= self.dwell:
+            self.on = target
+            self.changed = time_s
+        return self.on
