@@ -259,3 +259,43 @@ def thermal_network(scale=1, seed=42):
             ),
         ],
     )
+
+
+def modulation(scale=1, seed=42):
+    from .inverter import svpwm
+    from .transforms import inverse_clarke
+
+    angle = np.linspace(0, 2 * np.pi, 121 * scale)
+    target = np.column_stack([150 * np.cos(angle), 150 * np.sin(angle)])
+    duty = np.array([svpwm(v, 400) for v in target])
+    phase = (duty - duty.mean(axis=1)[:, None]) * 400
+    ref = inverse_clarke(np.column_stack([target, np.zeros(len(angle))]))
+    a = {
+        "angle_rad": angle,
+        "duty_a": duty[:, 0],
+        "duty_b": duty[:, 1],
+        "duty_c": duty[:, 2],
+        "error_v": np.linalg.norm(phase - ref, axis=1),
+    }
+    return lines(
+        "svpwm-average",
+        {"bus_v": 400, "vector_peak_v": 150},
+        {"maximum_average_error_v": float(max(a["error_v"]))},
+        a,
+        [
+            (
+                "Three-leg modulation",
+                "angle_rad",
+                [("duty_a", "A"), ("duty_b", "B"), ("duty_c", "C")],
+                "Electrical angle (rad)",
+                "Duty ratio",
+            ),
+            (
+                "Analytic averaged voltage closure",
+                "angle_rad",
+                [("error_v", "Phase-vector norm")],
+                "Electrical angle (rad)",
+                "Residual (V)",
+            ),
+        ],
+    )

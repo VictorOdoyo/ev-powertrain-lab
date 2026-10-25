@@ -41,3 +41,8 @@ def test_pulse_study_relaxes_after_current_removal():
 def test_thermal_study_conserves_heat():
     r = m.thermal_network()
     assert r["summary"]["maximum_energy_drift_j"] < 1e-5
+
+
+def test_modulation_study_matches_inverse_transform():
+    r = m.modulation()
+    assert r["summary"]["maximum_average_error_v"] < 1e-10
