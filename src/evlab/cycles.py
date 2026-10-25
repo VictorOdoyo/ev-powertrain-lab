@@ -40,3 +40,13 @@ def synthetic(kind="urban", dt_s=0.2, duration_s=120.0):
         raise ValueError("known synthetic cycle required")
     grade = 0.07 * np.sin(2 * np.pi * t / duration) if kind == "hill" else np.zeros(len(t))
     return Cycle(t, v, grade, "synthetic-" + kind)
+
+
+def resample(cycle, dt_s):
+    from .core import positive
+
+    count = max(2, round((cycle.time_s[-1] - cycle.time_s[0]) / positive(dt_s)) + 1)
+    t = np.linspace(cycle.time_s[0], cycle.time_s[-1], count)
+    return Cycle(
+        t, np.interp(t, cycle.time_s, cycle.speed_m_s), np.interp(t, cycle.time_s, cycle.grade), cycle.label
+    )
