@@ -34,3 +34,25 @@ def priority_voltage(command, bus_v, axis=0):
     head = np.sqrt(max(0, limit**2 - out[axis] ** 2))
     out[other] = np.clip(v[other], -head, head)
     return out
+
+
+class ResistanceRLS:
+    def __init__(self, initial_ohm=0.05, covariance=1.0, forgetting=0.999):
+        self.value = positive(initial_ohm)
+        self.covariance = positive(covariance)
+        if not 0 < forgetting <= 1:
+            raise ValueError("forgetting in (0,1] required")
+        self.forgetting = forgetting
+
+    def update(self, current_a, voltage_drop_v, minimum_current_a=5):
+        if not np.isfinite(current_a + voltage_drop_v):
+            raise ValueError("finite pulse residual required")
+        if abs(current_a) < positive(minimum_current_a):
+            return False
+        gain = self.covariance * current_a / (self.forgetting + current_a**2 * self.covariance)
+        candidate = self.value + gain * (voltage_drop_v - current_a * self.value)
+        if candidate <= 0:
+            return False
+        self.value = candidate
+        self.covariance = (self.covariance - gain * current_a * self.covariance) / self.forgetting
+        return True

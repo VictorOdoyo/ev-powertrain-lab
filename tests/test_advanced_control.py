@@ -15,3 +15,12 @@ def test_deadbeat_current_target_is_exact_when_voltage_is_feasible():
 def test_priority_voltage_retains_selected_axis_before_secondary():
     a = m.priority_voltage([100, 200], 300)
     assert a[0] == 100 and np.linalg.norm(a) == pytest.approx(300 / np.sqrt(3))
+
+
+def test_rls_recovers_resistance_and_skips_unexcited_samples():
+    r = m.ResistanceRLS(0.1)
+    assert not r.update(0, 0)
+    for i in np.tile([10, -30, 50, -100], 20):
+        r.update(i, 0.064 * i)
+    assert r.value == pytest.approx(0.064, rel=1e-4)
+    assert r.covariance > 0
