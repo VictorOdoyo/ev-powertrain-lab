@@ -23,3 +23,8 @@ def axle_loads(mass_kg, acceleration_m_s2, wheelbase_m=2.8, cg_front_distance_m=
     if min(front, rear) < 0:
         raise ValueError("requested acceleration lifts an axle")
     return {"front_n": front, "rear_n": rear}
+
+
+def tire_force(slip, normal_n, coefficient=0.8, stiffness=10):
+    s = finite(slip, real=True)
+    return positive(normal_n) * positive(coefficient) * np.tanh(positive(stiffness) * s)

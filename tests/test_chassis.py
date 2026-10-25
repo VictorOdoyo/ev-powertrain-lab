@@ -12,3 +12,9 @@ def test_axle_load_transfer_preserves_total_normal_force():
     b = m.axle_loads(1800, 0)
     assert a["rear_n"] > b["rear_n"]
     assert a["front_n"] + a["rear_n"] == pytest.approx(1800 * 9.80665)
+
+
+def test_tire_force_is_odd_and_saturates_at_friction_capacity():
+    assert m.tire_force(0, 4000) == 0
+    assert m.tire_force(100, 4000) == pytest.approx(3200)
+    assert m.tire_force(-0.1, 4000) == -m.tire_force(0.1, 4000)
