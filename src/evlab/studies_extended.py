@@ -74,3 +74,26 @@ def precharge(scale=1, seed=42):
             ),
         ],
     )
+
+
+def tire_envelope(scale=1, seed=42):
+    from .chassis import friction_circle
+
+    lateral = np.linspace(0, 4000, 101 * scale)
+    longitudinal = np.array([friction_circle(10000, y, 5000, 0.8) for y in lateral])
+    a = {
+        "lateral_n": lateral,
+        "longitudinal_n": longitudinal,
+        "circle_error_n2": longitudinal**2 + lateral**2 - 4000**2,
+    }
+    return output(
+        "tire-envelope",
+        {"normal_n": 5000, "mu": 0.8},
+        {"maximum_circle_residual_n2": float(max(abs(a["circle_error_n2"])))},
+        a,
+        "Remaining traction under lateral demand",
+        "lateral_n",
+        [("longitudinal_n", "Longitudinal capacity")],
+        "Lateral force (N)",
+        "Longitudinal force (N)",
+    )

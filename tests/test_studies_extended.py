@@ -11,3 +11,8 @@ def test_impedance_study_identifies_declared_pack():
 def test_precharge_study_closes_accumulated_energy():
     r = m.precharge()
     assert abs(r["summary"]["energy_defect_j"]) < 1e-9
+
+
+def test_tire_envelope_reaches_zero_longitudinal_headroom():
+    r = m.tire_envelope()
+    assert r["arrays"]["longitudinal_n"][-1] == 0
