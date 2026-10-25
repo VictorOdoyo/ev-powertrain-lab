@@ -29,3 +29,20 @@ def network(capacities, edges, ambient_conductance):
         k[a, b] -= value
         k[b, a] -= value
     return {"capacity": c, "conductance": k, "ambient": g}
+
+
+def network_step(temperature, heat_w, ambient_c, dt_s, model):
+    from scipy.linalg import expm
+
+    from .core import finite, positive
+
+    t = finite(temperature, real=True, ndim=1)
+    q = finite(heat_w, real=True, ndim=1)
+    c, k, g = model["capacity"], model["conductance"], model["ambient"]
+    if t.shape != c.shape or q.shape != c.shape:
+        raise ValueError("matching thermal nodes required")
+    n = len(c)
+    aug = np.zeros((n + 1, n + 1))
+    aug[:n, :n] = -k / c[:, None]
+    aug[:n, n] = (q + g * ambient_c) / c
+    return (expm(aug * positive(dt_s)) @ np.r_[t, 1])[:n]

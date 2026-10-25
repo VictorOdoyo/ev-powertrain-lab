@@ -11,3 +11,10 @@ def test_lumped_temperature_matches_step_response():
 def test_internal_thermal_exchange_conserves_heat():
     net = m.network([100, 200], [(0, 1, 3)], [0, 0])
     assert np.allclose(np.sum(net["conductance"], axis=0), 0)
+
+
+def test_coupled_thermal_step_conserves_energy_without_ambient():
+    net = m.network([100, 200], [(0, 1, 3)], [0, 0])
+    old = np.array([100.0, 0.0])
+    new = m.network_step(old, [0, 0], 25, 10, net)
+    assert new @ net["capacity"] == pytest.approx(old @ net["capacity"])
