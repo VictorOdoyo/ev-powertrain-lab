@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 
 @dataclass(frozen=True)
 class Pack:
@@ -44,3 +46,14 @@ class Pack:
     @property
     def c1(self):
         return self.cell_c1_f * self.parallel / self.series
+
+
+def ocv(soc, temperature_c=25.0, model=None):
+    from .core import finite
+
+    p = Pack() if model is None else model
+    z = finite(soc, real=True)
+    t = finite(temperature_c, real=True)
+    if np.any((z < 0) | (z > 1)):
+        raise ValueError("SOC outside [0,1]")
+    return p.series * (3.1 + 1.0 * z + 0.06 * np.tanh(10 * (z - 0.5)) - 0.0002 * (t - 25))
