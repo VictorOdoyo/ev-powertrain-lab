@@ -43,3 +43,11 @@ def road_forces(speed_m_s, grade=0.0, wind_m_s=0.0, model=None):
     rolling = p.rolling * p.mass_kg * 9.80665 * np.cos(angle) * np.tanh(speed / 0.1)
     gravity = p.mass_kg * 9.80665 * np.sin(angle)
     return {"aero_n": aero, "rolling_n": rolling, "grade_n": gravity, "total_n": aero + rolling + gravity}
+
+
+def motor_torque(force_n, speed_m_s, model=None):
+    p = Vehicle() if model is None else model
+    force = np.asarray(force_n, float)
+    drive = force * np.asarray(speed_m_s) >= 0
+    torque = force * p.wheel_radius_m / p.gear
+    return np.where(drive, torque / p.gear_efficiency, torque * p.gear_efficiency)
