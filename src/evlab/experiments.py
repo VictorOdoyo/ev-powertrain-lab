@@ -33,6 +33,46 @@ CASES = {
     "battery-pulse": ["studies_bench", "battery_pulse", "Exact RC polarization recovery"],
     "thermal-network": ["studies_bench", "thermal_network", "Conservative thermal coupling"],
     "svpwm-average": ["studies_bench", "modulation", "Averaged modulation voltage closure"],
+    "cell-passive-balancing": [
+        "studies_cells",
+        "balanced",
+        "Compute voltage-driven shunt balancing and its actual energy cost",
+    ],
+    "cell-unbalanced-reference": [
+        "studies_cells",
+        "unbalanced",
+        "Retain initial SOC mismatch with passive balancing disabled",
+    ],
+    "cell-noisy-balancing": [
+        "studies_cells",
+        "noisy",
+        "Exercise measured-voltage balancing hysteresis under sensor noise",
+    ],
+    "weakest-cell-soc-cutoff": [
+        "studies_cells",
+        "weak",
+        "Stop heterogeneous string discharge when the lowest-capacity cell empties",
+    ],
+    "cell-charge-soc-boundary": [
+        "studies_cells",
+        "charge",
+        "Stop charging at the first cell SOC boundary without clipping a full-duration solution",
+    ],
+    "cell-capacity-identification": [
+        "studies_cells",
+        "capacity",
+        "Estimate degraded cell capacity from noisy observed SOC changes and coulomb throughput",
+    ],
+    "cell-pulse-identification": [
+        "studies_cells",
+        "pulse",
+        "Recover instantaneous cell resistance while fitting the unknown OCV intercept",
+    ],
+    "relaxed-ocv-soc": [
+        "studies_cells",
+        "rest",
+        "Map noisy relaxed OCV to SOC while retaining voltage-range clipping flags",
+    ],
 }
 
 
