@@ -36,3 +36,10 @@ def test_nonlinear_balance_energy():
     assert abs(r["energy_residual_j"]) < 1e-6
     assert r["state"][0, 0] < 0.7
     assert r["bleed_j"] > 0
+
+
+def test_balance_hysteresis():
+    b = m.Balancer(4, maximum_active=1)
+    assert np.array_equal(b.update([4, 3.9, 3.95, 3.9]), [True, False, False, False])
+    assert b.update([3.915, 3.9, 3.9, 3.9])[0]
+    assert not b.update([3.905, 3.9, 3.9, 3.9]).any()

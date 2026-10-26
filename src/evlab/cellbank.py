@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .core import finite, positive
+from .core import finite, integer, positive
 
 
 @dataclass(frozen=True)
@@ -121,3 +121,27 @@ def advance(value, current_a, duration_s, shunt_s=None, model=None):
         "dissipation_j": float(energies[2]),
         "energy_residual_j": float(residual),
     }
+
+
+class Balancer:
+    def __init__(self, count, on_difference_v=0.02, off_difference_v=0.01, maximum_active=2):
+        integer(count, 2)
+        integer(maximum_active)
+        self.on = positive(on_difference_v)
+        self.off = positive(off_difference_v, allow_zero=True)
+        if self.off >= self.on or maximum_active > count:
+            raise ValueError("ordered voltage hysteresis and bounded concurrency required")
+        self.active = np.zeros(count, bool)
+        self.maximum = maximum_active
+
+    def update(self, measured_v):
+        voltage = finite(measured_v, real=True, ndim=1)
+        if voltage.shape != self.active.shape:
+            raise ValueError("one voltage observation per cell required")
+        difference = voltage - min(voltage)
+        requested = np.where(self.active, difference > self.off, difference > self.on)
+        eligible = np.flatnonzero(requested)
+        order = eligible[np.argsort(difference[eligible])[::-1]]
+        self.active[:] = False
+        self.active[order[: self.maximum]] = True
+        return self.active.copy()
