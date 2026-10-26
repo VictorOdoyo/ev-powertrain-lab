@@ -58,3 +58,10 @@ def test_pulse_resistance():
     r = m.pulse_fit(i, 3.7 - 0.03 * i)
     assert r["resistance_ohm"] == pytest.approx(0.03)
     assert r["ocv_v"] == pytest.approx(3.7)
+
+
+def test_ocv_inverse():
+    z = np.array([0.1, 0.5, 0.9])
+    v = 3.1 + z + 0.06 * np.tanh(10 * (z - 0.5))
+    assert np.allclose(m.relaxed_soc(v)["soc"], z)
+    assert m.relaxed_soc([2, 5])["clipped"].all()

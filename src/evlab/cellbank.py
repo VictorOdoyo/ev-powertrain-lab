@@ -176,3 +176,21 @@ def pulse_fit(current_a, voltage_v):
         "resistance_ohm": float(estimate[1]),
         "resistance_std_ohm": float(np.sqrt(covariance[1, 1])),
     }
+
+
+def relaxed_soc(voltage_v):
+    from scipy.optimize import brentq
+
+    v = finite(voltage_v, real=True)
+    flat = v.ravel()
+    values = []
+    clipped = []
+
+    def curve(z):
+        return 3.1 + z + 0.06 * np.tanh(10 * (z - 0.5))
+
+    for value in flat:
+        limited = float(np.clip(value, curve(0), curve(1)))
+        clipped.append(value != limited)
+        values.append(brentq(lambda z: curve(z) - limited, 0, 1))
+    return {"soc": np.array(values).reshape(v.shape), "clipped": np.array(clipped).reshape(v.shape)}
