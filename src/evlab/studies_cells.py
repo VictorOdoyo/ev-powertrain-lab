@@ -75,3 +75,7 @@ def balance_run(name, scale, seed, enabled=True, noise_std_v=0):
             "Voltage is sampled with shunts momentarily off; acquisition duration is idealized as zero.",
         ],
     )
+
+
+def balanced(scale=1, seed=42):
+    return balance_run("cell-passive-balancing", scale, seed)
