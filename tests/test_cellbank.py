@@ -51,3 +51,10 @@ def test_capacity_identification():
     assert r["capacity_ah"] == pytest.approx(1.8)
     with pytest.raises(ValueError):
         m.capacity_fit(q, np.zeros(30))
+
+
+def test_pulse_resistance():
+    i = np.array([-2.0, -1, 0, 1, 2])
+    r = m.pulse_fit(i, 3.7 - 0.03 * i)
+    assert r["resistance_ohm"] == pytest.approx(0.03)
+    assert r["ocv_v"] == pytest.approx(3.7)

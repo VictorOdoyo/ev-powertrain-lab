@@ -157,3 +157,22 @@ def capacity_fit(charge_c, soc_change):
         raise ValueError("capacity fit violates discharge sign convention")
     residual = q + capacity * dz
     return {"capacity_ah": capacity / 3600, "charge_rmse_c": float(np.sqrt(np.mean(residual**2)))}
+
+
+def pulse_fit(current_a, voltage_v):
+    current = finite(current_a, real=True, ndim=1)
+    voltage = finite(voltage_v, real=True, ndim=1)
+    if current.shape != voltage.shape or len(current) < 3 or np.ptp(current) < 1e-6:
+        raise ValueError("excited aligned instantaneous current-voltage samples required")
+    matrix = np.column_stack([np.ones(len(current)), -current])
+    estimate = np.linalg.lstsq(matrix, voltage, rcond=None)[0]
+    if estimate[1] <= 0:
+        raise ValueError("positive ohmic resistance required")
+    residual = voltage - matrix @ estimate
+    variance = float(residual @ residual / (len(current) - 2))
+    covariance = variance * np.linalg.inv(matrix.T @ matrix)
+    return {
+        "ocv_v": float(estimate[0]),
+        "resistance_ohm": float(estimate[1]),
+        "resistance_std_ohm": float(np.sqrt(covariance[1, 1])),
+    }
