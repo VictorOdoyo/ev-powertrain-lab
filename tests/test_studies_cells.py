@@ -43,3 +43,11 @@ def test_pulse():
 
 def test_rest():
     assert m.rest()["summary"]["soc_rmse"] < 0.01
+
+
+def test_balancing_tradeoff_is_measured():
+    on = m.balanced()
+    off = m.unbalanced()
+    assert on["summary"]["final_soc_spread"] < off["summary"]["final_soc_spread"] / 2
+    assert on["summary"]["bleed_heat_j"] > 0
+    assert off["summary"]["bleed_heat_j"] == 0
