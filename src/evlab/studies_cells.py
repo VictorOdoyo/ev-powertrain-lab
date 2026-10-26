@@ -87,3 +87,28 @@ def unbalanced(scale=1, seed=42):
 
 def noisy(scale=1, seed=42):
     return balance_run("cell-noisy-balancing", scale, seed, noise_std_v=0.003)
+
+
+def weak(scale=1, seed=42):
+    from .cellbank import Cells, advance
+
+    p = Cells(capacity_ah=(2.0, 2.1, 1.0, 2.0))
+    initial = np.array([[0.4] * 4, [0.0] * 4])
+    r = advance(initial, 4, 1200, model=p)
+    return make(
+        "weakest-cell-soc-cutoff",
+        {"current_a": 4, "capacity_ah": p.capacity_ah, "requested_s": 1200},
+        {"elapsed_s": r["elapsed_s"], "boundary": r["boundary"], "energy_residual_j": r["energy_residual_j"]},
+        {"cell": np.arange(4), "initial_soc": initial[0], "final_soc": r["state"][0]},
+        [
+            curve(
+                "First-cell SOC termination",
+                "cell",
+                [("initial_soc", "Initial"), ("final_soc", "Terminated state")],
+                "Cell index",
+                "SOC fraction",
+                ylim=(-0.02, 1.02),
+            )
+        ],
+        assumptions=["SOC boundary study, not a complete voltage/thermal charge-protection algorithm."],
+    )

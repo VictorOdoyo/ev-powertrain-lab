@@ -17,3 +17,10 @@ def test_noisy():
     r = m.noisy()
     assert abs(r["summary"]["max_energy_residual_j"]) < 1e-4
     assert r["summary"]["final_soc_spread"] <= 0.081
+
+
+def test_weak():
+    r = m.weak()
+    assert r["summary"]["boundary"]
+    assert r["summary"]["elapsed_s"] < 1200
+    assert abs(r["summary"]["energy_residual_j"]) < 1e-3
