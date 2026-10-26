@@ -79,3 +79,7 @@ def balance_run(name, scale, seed, enabled=True, noise_std_v=0):
 
 def balanced(scale=1, seed=42):
     return balance_run("cell-passive-balancing", scale, seed)
+
+
+def unbalanced(scale=1, seed=42):
+    return balance_run("cell-unbalanced-reference", scale, seed, enabled=False)
