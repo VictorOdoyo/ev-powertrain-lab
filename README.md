@@ -30,7 +30,7 @@ The main drive replay uses quasi-steady feasible motor points and forward vehicl
 
 ## Evidence and methods
 
-The [computed gallery](docs/results.md) contains all 24 studies, CSV/JSON exports, NPZ arrays, plots, HTML reports and SHA-256 manifests. Infeasible operating points are masked rather than presented as attained motion.
+The [computed gallery](docs/results.md) contains all 32 studies, CSV/JSON exports, NPZ arrays, plots, HTML reports and SHA-256 manifests. Infeasible operating points are masked rather than presented as attained motion.
 
 | Read | Purpose |
 |---|---|
@@ -65,3 +65,7 @@ uv build
 ```
 
 CI covers Linux/Windows, Python 3.11/3.13, formatting and an installed-wheel report outside the checkout. See [contributing](CONTRIBUTING.md) and [release notes](CHANGELOG.md). MIT licensed.
+
+## Cell-health extension
+
+[Passive balancing and heterogeneous cells](docs/cell-balancing.md) and [capacity/resistance diagnostics](docs/cell-identification.md) add eight reproducible studies with independent energy and observability checks.
