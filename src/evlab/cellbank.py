@@ -54,3 +54,11 @@ def ports(value, string_current_a, shunt_s=None, model=None):
         "ohmic_w": float(sum(resistance * cell_current**2)),
         "relaxation_w": float(sum(x[1] ** 2 / p.r1_ohm)),
     }
+
+
+def stored_energy(value, model=None):
+    p = Cells() if model is None else model
+    x = validate_state(value, p)
+    z = x[0]
+    primitive = 3.1 * z + 0.5 * z * z + 0.006 * (np.log(np.cosh(10 * (z - 0.5))) - np.log(np.cosh(5)))
+    return float(np.sum(np.asarray(p.capacity_ah) * 3600 * primitive + 0.5 * p.c1_f * x[1] ** 2))
