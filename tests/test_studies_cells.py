@@ -35,3 +35,7 @@ def test_charge():
 
 def test_capacity():
     assert abs(m.capacity()["summary"]["capacity_ah"] - 1.65) < 0.02
+
+
+def test_pulse():
+    assert abs(m.pulse()["summary"]["resistance_ohm"] - 0.035) < 0.001

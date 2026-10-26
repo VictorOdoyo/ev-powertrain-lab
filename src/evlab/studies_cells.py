@@ -169,3 +169,30 @@ def capacity(scale=1, seed=42):
             "SOC observations are supplied; capacity and unobserved SOC are not jointly identifiable from coulomb count alone."
         ],
     )
+
+
+def pulse(scale=1, seed=42):
+    from .cellbank import pulse_fit
+    from .core import stream
+
+    i = np.linspace(-3, 3, 61 * scale)
+    v = 3.75 - 0.035 * i + stream(seed, "pulse").normal(0, 0.002, len(i))
+    fit = pulse_fit(i, v)
+    return make(
+        "cell-pulse-identification",
+        {"true_resistance_ohm": 0.035, "voltage_noise_std_v": 0.002},
+        fit,
+        {"current_a": i, "measured_v": v, "fitted_v": fit["ocv_v"] - fit["resistance_ohm"] * i},
+        [
+            curve(
+                "Instantaneous pulse samples",
+                "current_a",
+                [("measured_v", "Observed"), ("fitted_v", "Fit")],
+                "Current (A)",
+                "Cell voltage (V)",
+            )
+        ],
+        assumptions=[
+            "Simultaneous short-pulse samples at unchanged SOC and polarization; long-pulse relaxation violates this regression."
+        ],
+    )
