@@ -83,3 +83,7 @@ def balanced(scale=1, seed=42):
 
 def unbalanced(scale=1, seed=42):
     return balance_run("cell-unbalanced-reference", scale, seed, enabled=False)
+
+
+def noisy(scale=1, seed=42):
+    return balance_run("cell-noisy-balancing", scale, seed, noise_std_v=0.003)
