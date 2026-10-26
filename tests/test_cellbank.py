@@ -28,3 +28,11 @@ def test_energy_gradient_matches_ocv():
     minus[0, 0] -= eps
     derivative = (m.stored_energy(plus) - m.stored_energy(minus)) / (2 * eps)
     assert derivative / (2 * 3600) == pytest.approx(3.1 + 0.4 + 0.06 * np.tanh(-1), rel=1e-8)
+
+
+def test_nonlinear_balance_energy():
+    x = np.array([[0.7, 0.6, 0.65, 0.62], [0] * 4])
+    r = m.advance(x, 1, 60, [0.2, 0, 0, 0])
+    assert abs(r["energy_residual_j"]) < 1e-6
+    assert r["state"][0, 0] < 0.7
+    assert r["bleed_j"] > 0
