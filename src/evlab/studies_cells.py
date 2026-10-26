@@ -112,3 +112,28 @@ def weak(scale=1, seed=42):
         ],
         assumptions=["SOC boundary study, not a complete voltage/thermal charge-protection algorithm."],
     )
+
+
+def charge(scale=1, seed=42):
+    from .cellbank import Cells, advance
+
+    p = Cells(capacity_ah=(2.0, 2.1, 1.9, 2.0))
+    initial = np.array([[0.99] * 4, [0.0] * 4])
+    r = advance(initial, -3, 1200, model=p)
+    return make(
+        "cell-charge-soc-boundary",
+        {"current_a": -3, "capacity_ah": p.capacity_ah, "requested_s": 1200},
+        {"elapsed_s": r["elapsed_s"], "boundary": r["boundary"], "energy_residual_j": r["energy_residual_j"]},
+        {"cell": np.arange(4), "initial_soc": initial[0], "final_soc": r["state"][0]},
+        [
+            curve(
+                "First-cell SOC termination",
+                "cell",
+                [("initial_soc", "Initial"), ("final_soc", "Terminated state")],
+                "Cell index",
+                "SOC fraction",
+                ylim=(-0.02, 1.02),
+            )
+        ],
+        assumptions=["SOC boundary study, not a complete voltage/thermal charge-protection algorithm."],
+    )

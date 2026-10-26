@@ -24,3 +24,10 @@ def test_weak():
     assert r["summary"]["boundary"]
     assert r["summary"]["elapsed_s"] < 1200
     assert abs(r["summary"]["energy_residual_j"]) < 1e-3
+
+
+def test_charge():
+    r = m.charge()
+    assert r["summary"]["boundary"]
+    assert r["summary"]["elapsed_s"] < 1200
+    assert abs(r["summary"]["energy_residual_j"]) < 1e-3
