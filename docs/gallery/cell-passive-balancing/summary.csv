@@ -1,0 +1,5 @@
+metric,value
+bleed_heat_j,2011.7752318527678
+final_soc_spread,0.013353654226922695
+initial_soc_spread,0.08
+max_energy_residual_j,3.059112745978883e-10
