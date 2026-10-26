@@ -1,0 +1,12 @@
+{
+  "configuration_sha256": "628af030ce10434f92157f77c2fd2dc14a421769091ed4ac07db1e2362e2f95b",
+  "git_dirty": false,
+  "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+  "matplotlib": "3.11.2",
+  "numpy": "2.5.4",
+  "package_version": "0.1.0",
+  "parameters_sha256": "34d85323fdb1b9b8a968bfd2b8c2cb0cf375e5a9bdb7ade720531360ab13f6d0",
+  "python": "3.13.15",
+  "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+  "scipy": "1.18.1"
+}
