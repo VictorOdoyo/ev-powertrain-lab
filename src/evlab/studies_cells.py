@@ -196,3 +196,40 @@ def pulse(scale=1, seed=42):
             "Simultaneous short-pulse samples at unchanged SOC and polarization; long-pulse relaxation violates this regression."
         ],
     )
+
+
+def rest(scale=1, seed=42):
+    from .cellbank import relaxed_soc
+    from .core import stream
+
+    truth = np.linspace(0, 1, 101 * scale)
+    voltage = (
+        3.1 + truth + 0.06 * np.tanh(10 * (truth - 0.5)) + stream(seed, "rest").normal(0, 0.005, len(truth))
+    )
+    result = relaxed_soc(voltage)
+    return make(
+        "relaxed-ocv-soc",
+        {"voltage_noise_std_v": 0.005},
+        {
+            "soc_rmse": float(np.sqrt(np.mean((result["soc"] - truth) ** 2))),
+            "clipped_samples": int(sum(result["clipped"])),
+        },
+        {
+            "true_soc": truth,
+            "estimated_soc": result["soc"],
+            "reference_soc": truth,
+            "clipped": result["clipped"],
+        },
+        [
+            curve(
+                "Relaxed voltage inversion",
+                "true_soc",
+                [("estimated_soc", "Voltage-derived estimate"), ("reference_soc", "Reference")],
+                "True SOC fraction",
+                "Estimated SOC fraction",
+            )
+        ],
+        assumptions=[
+            "Fully relaxed zero-current OCV; polarization or load current would bias this observation."
+        ],
+    )

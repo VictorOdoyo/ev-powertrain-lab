@@ -39,3 +39,7 @@ def test_capacity():
 
 def test_pulse():
     assert abs(m.pulse()["summary"]["resistance_ohm"] - 0.035) < 0.001
+
+
+def test_rest():
+    assert m.rest()["summary"]["soc_rmse"] < 0.01
