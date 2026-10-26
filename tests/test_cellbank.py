@@ -43,3 +43,11 @@ def test_balance_hysteresis():
     assert np.array_equal(b.update([4, 3.9, 3.95, 3.9]), [True, False, False, False])
     assert b.update([3.915, 3.9, 3.9, 3.9])[0]
     assert not b.update([3.905, 3.9, 3.9, 3.9]).any()
+
+
+def test_capacity_identification():
+    q = np.linspace(0, 500, 30)
+    r = m.capacity_fit(q, -q / (1.8 * 3600))
+    assert r["capacity_ah"] == pytest.approx(1.8)
+    with pytest.raises(ValueError):
+        m.capacity_fit(q, np.zeros(30))

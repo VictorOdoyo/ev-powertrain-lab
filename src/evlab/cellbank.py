@@ -145,3 +145,15 @@ class Balancer:
         self.active[:] = False
         self.active[order[: self.maximum]] = True
         return self.active.copy()
+
+
+def capacity_fit(charge_c, soc_change):
+    q = finite(charge_c, real=True, ndim=1)
+    dz = finite(soc_change, real=True, ndim=1)
+    if q.shape != dz.shape or len(q) < 3 or np.linalg.norm(dz) < 1e-6:
+        raise ValueError("aligned excited cumulative charge and SOC differences required")
+    capacity = -float(dz @ q / (dz @ dz))
+    if capacity <= 0:
+        raise ValueError("capacity fit violates discharge sign convention")
+    residual = q + capacity * dz
+    return {"capacity_ah": capacity / 3600, "charge_rmse_c": float(np.sqrt(np.mean(residual**2)))}
