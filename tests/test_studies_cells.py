@@ -31,3 +31,7 @@ def test_charge():
     assert r["summary"]["boundary"]
     assert r["summary"]["elapsed_s"] < 1200
     assert abs(r["summary"]["energy_residual_j"]) < 1e-3
+
+
+def test_capacity():
+    assert abs(m.capacity()["summary"]["capacity_ah"] - 1.65) < 0.02

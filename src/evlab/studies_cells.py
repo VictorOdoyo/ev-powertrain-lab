@@ -137,3 +137,35 @@ def charge(scale=1, seed=42):
         ],
         assumptions=["SOC boundary study, not a complete voltage/thermal charge-protection algorithm."],
     )
+
+
+def capacity(scale=1, seed=42):
+    from .cellbank import capacity_fit
+    from .core import stream
+
+    q = np.linspace(0, 3000, 101 * scale)
+    true = 1.65
+    observed = -q / (true * 3600) + stream(seed, "capacity").normal(0, 0.001, len(q))
+    fit = capacity_fit(q, observed)
+    return make(
+        "cell-capacity-identification",
+        {"true_capacity_ah": true, "soc_noise_std": 0.001},
+        fit,
+        {
+            "charge_c": q,
+            "observed_soc_change": observed,
+            "fitted_soc_change": -q / (fit["capacity_ah"] * 3600),
+        },
+        [
+            curve(
+                "Charge versus observed SOC change",
+                "charge_c",
+                [("observed_soc_change", "Observed"), ("fitted_soc_change", "Fitted capacity")],
+                "Discharged charge (C)",
+                "SOC change",
+            )
+        ],
+        assumptions=[
+            "SOC observations are supplied; capacity and unobserved SOC are not jointly identifiable from coulomb count alone."
+        ],
+    )
