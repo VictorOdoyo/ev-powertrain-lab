@@ -1,6 +1,6 @@
 # Computed experiment gallery
 
-Twenty-four default studies computed from clean source revision [`f76abf4e92fc`](https://github.com/VictorOdoyo/ev-powertrain-lab/commit/f76abf4e92fcad76f09c382695c29ff51b7d2a71).
+32 default studies computed from clean source revision [`f89042618d08`](https://github.com/VictorOdoyo/ev-powertrain-lab/commit/f89042618d0884ff741ae8772ede08dc1648c042).
 All values below come from the sealed captures. Each case directory contains the complete
 NPZ arrays, CSV tables, parameters, provenance, plot and HTML report.
 
@@ -32,6 +32,14 @@ HTML files can be opened locally; GitHub previews the figures and tables directl
 | [battery-pulse](gallery/battery-pulse/figure.png) | final_soc = 0.694444 | [summary](gallery/battery-pulse/summary.csv), [setup](gallery/battery-pulse/parameters.json), [archive](gallery/battery-pulse/fields.npz), [report](gallery/battery-pulse/index.html) |
 | [thermal-network](gallery/thermal-network/figure.png) | maximum_energy_drift_j = 3.49246e-10 | [summary](gallery/thermal-network/summary.csv), [setup](gallery/thermal-network/parameters.json), [archive](gallery/thermal-network/fields.npz), [report](gallery/thermal-network/index.html) |
 | [svpwm-average](gallery/svpwm-average/figure.png) | maximum_average_error_v = 7.65278e-14 | [summary](gallery/svpwm-average/summary.csv), [setup](gallery/svpwm-average/parameters.json), [archive](gallery/svpwm-average/fields.npz), [report](gallery/svpwm-average/index.html) |
+| [cell-passive-balancing](gallery/cell-passive-balancing/figure.png) | bleed_heat_j = 2011.78; final_soc_spread = 0.0133537 | [summary](gallery/cell-passive-balancing/summary.csv), [setup](gallery/cell-passive-balancing/parameters.json), [archive](gallery/cell-passive-balancing/fields.npz), [report](gallery/cell-passive-balancing/index.html) |
+| [cell-unbalanced-reference](gallery/cell-unbalanced-reference/figure.png) | bleed_heat_j = 0; final_soc_spread = 0.08 | [summary](gallery/cell-unbalanced-reference/summary.csv), [setup](gallery/cell-unbalanced-reference/parameters.json), [archive](gallery/cell-unbalanced-reference/fields.npz), [report](gallery/cell-unbalanced-reference/index.html) |
+| [cell-noisy-balancing](gallery/cell-noisy-balancing/figure.png) | bleed_heat_j = 2269.89; final_soc_spread = 0.0100375 | [summary](gallery/cell-noisy-balancing/summary.csv), [setup](gallery/cell-noisy-balancing/parameters.json), [archive](gallery/cell-noisy-balancing/fields.npz), [report](gallery/cell-noisy-balancing/index.html) |
+| [weakest-cell-soc-cutoff](gallery/weakest-cell-soc-cutoff/figure.png) | boundary = True; elapsed_s = 360 | [summary](gallery/weakest-cell-soc-cutoff/summary.csv), [setup](gallery/weakest-cell-soc-cutoff/parameters.json), [archive](gallery/weakest-cell-soc-cutoff/fields.npz), [report](gallery/weakest-cell-soc-cutoff/index.html) |
+| [cell-charge-soc-boundary](gallery/cell-charge-soc-boundary/figure.png) | boundary = True; elapsed_s = 22.8 | [summary](gallery/cell-charge-soc-boundary/summary.csv), [setup](gallery/cell-charge-soc-boundary/parameters.json), [archive](gallery/cell-charge-soc-boundary/fields.npz), [report](gallery/cell-charge-soc-boundary/index.html) |
+| [cell-capacity-identification](gallery/cell-capacity-identification/figure.png) | capacity_ah = 1.65071; charge_rmse_c = 5.73485 | [summary](gallery/cell-capacity-identification/summary.csv), [setup](gallery/cell-capacity-identification/parameters.json), [archive](gallery/cell-capacity-identification/fields.npz), [report](gallery/cell-capacity-identification/index.html) |
+| [cell-pulse-identification](gallery/cell-pulse-identification/figure.png) | ocv_v = 3.75013; resistance_ohm = 0.0350774 | [summary](gallery/cell-pulse-identification/summary.csv), [setup](gallery/cell-pulse-identification/parameters.json), [archive](gallery/cell-pulse-identification/fields.npz), [report](gallery/cell-pulse-identification/index.html) |
+| [relaxed-ocv-soc](gallery/relaxed-ocv-soc/figure.png) | clipped_samples = 2; soc_rmse = 0.00463138 | [summary](gallery/relaxed-ocv-soc/summary.csv), [setup](gallery/relaxed-ocv-soc/parameters.json), [archive](gallery/relaxed-ocv-soc/fields.npz), [report](gallery/relaxed-ocv-soc/index.html) |
 
 ## Selected fields and diagnostics
 

@@ -11,7 +11,7 @@
       "provenance": {
         "configuration_sha256": "088b6a3355d0b536c382039087398a2b16cbb0ada5c2dbc77001c19ec7a9da48",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -35,7 +35,7 @@
       "provenance": {
         "configuration_sha256": "4c26335463b01b2b0c08d291068ac7599a84a00fcfe48ddf975b45affe6e7e5f",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -59,7 +59,7 @@
       "provenance": {
         "configuration_sha256": "64890624c942b9e2aac89bf10d8b58dffc6452f6ad2efe8aff3db39ae131ce28",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -83,7 +83,7 @@
       "provenance": {
         "configuration_sha256": "94148d694fe5cfd6bfd51a6a5c9abe66f43939a88a37ee177e7e39b69a6ced68",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -108,7 +108,7 @@
       "provenance": {
         "configuration_sha256": "50b8f7e8b3452a24bc01fea6f7ea55ead52d2398a4c29f6f7afcd81dd623723a",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -135,7 +135,7 @@
       "provenance": {
         "configuration_sha256": "e128258cf3214f2ad53a972f60db4887db89610d4db7765ae94f62dbc46d929f",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -163,7 +163,7 @@
       "provenance": {
         "configuration_sha256": "7b15407d68cc44d85bde28ff0dade599f085903724cbb7e8df92149662b0b3ea",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -187,7 +187,7 @@
       "provenance": {
         "configuration_sha256": "54fa8d037b57b81f36d1345417c4695d41f3ffe9042c694369af3a82f27a47ea",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -216,7 +216,7 @@
       "provenance": {
         "configuration_sha256": "f03b8034b5858aab5a0f89d04481034a1e5f1d7a8be82bb01b7d23d39e0f0907",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -245,7 +245,7 @@
       "provenance": {
         "configuration_sha256": "a469dd12024d5142f4fde873b79d46176226545ca34f478ff2e9adbb1ea66489",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -274,7 +274,7 @@
       "provenance": {
         "configuration_sha256": "8950e3c747582f6317feadcfda8cb15067a8690fc3457452afc22b98fbbdb056",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -303,7 +303,7 @@
       "provenance": {
         "configuration_sha256": "25ee90be83d6ed5238dde1795dec3312a41234cf6b5d3ffd1a81e84f28461c38",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -332,7 +332,7 @@
       "provenance": {
         "configuration_sha256": "ea6d768b089a1fa63767dd052bbee93acad56e494905af423a2b506b38be9c5f",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -361,7 +361,7 @@
       "provenance": {
         "configuration_sha256": "762a200d628d6d5a4a6df0f8820f1ca65988654c03bf618abbbd45c6650af400",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -390,7 +390,7 @@
       "provenance": {
         "configuration_sha256": "495e2c54f3f0974679f70a1e4416662dcd5135b06ec4377cfaa912a0446456a1",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -419,7 +419,7 @@
       "provenance": {
         "configuration_sha256": "eb55a68bd2eb228ded3789377e2b1fde4ea5bb0ffe7748cc8c73915e935895aa",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -448,7 +448,7 @@
       "provenance": {
         "configuration_sha256": "660d7fb20c1c9ae4196600a50ad02d63eba16bbe62c1248c10c73818708d1b15",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -472,7 +472,7 @@
       "provenance": {
         "configuration_sha256": "165235af5fbe7cbce7ca697be187981d66df3dfb0a95a9c61eba24fa318c82f9",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -496,7 +496,7 @@
       "provenance": {
         "configuration_sha256": "1b6e7097185b9527246dd6caf3aee6b14e93ece8d5d25b832f408df62f13eaee",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -521,7 +521,7 @@
       "provenance": {
         "configuration_sha256": "6aa966a18c6c7c169cbc0b61237ac9e83e6d68a4ec813dfcd3d2b5f5589b0de8",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -545,7 +545,7 @@
       "provenance": {
         "configuration_sha256": "79f6368b5d32f4f0346858de0366fe90be2f53358261ca2c2e43b38f33b60a13",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -569,7 +569,7 @@
       "provenance": {
         "configuration_sha256": "177cdbb60b8f19aca4faba77efbc2a18797d95cede17849f643eedc12154b0a6",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -593,7 +593,7 @@
       "provenance": {
         "configuration_sha256": "2ccf217f54a07d4614cb6cc21dd667b13ec98a1136d4a23c4bd3a57ce87e4702",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -617,7 +617,7 @@
       "provenance": {
         "configuration_sha256": "746d8fa69b4524504d06d753bcca8bed7546bfd8d7880159bbd26070e07558eb",
         "git_dirty": false,
-        "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
         "matplotlib": "3.11.2",
         "numpy": "2.5.4",
         "package_version": "0.1.0",
@@ -628,6 +628,215 @@
       },
       "summary": {
         "maximum_average_error_v": 7.652779469160725e-14
+      }
+    },
+    {
+      "archive": "cell-passive-balancing/fields.npz",
+      "case": "cell-passive-balancing",
+      "configuration": {
+        "case": "cell-passive-balancing",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "1a7281f24d1255491f63bc9195c325b52c4cd1cde0eb03fb9583c7bdab1a7ef8",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "aa5b8706b836f17d6903f2746f02bfffd9593825d50b0767d6a7026f4112d18c",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "bleed_heat_j": 2011.7752318527678,
+        "final_soc_spread": 0.013353654226922695,
+        "initial_soc_spread": 0.08,
+        "max_energy_residual_j": 3.059112745978883e-10
+      }
+    },
+    {
+      "archive": "cell-unbalanced-reference/fields.npz",
+      "case": "cell-unbalanced-reference",
+      "configuration": {
+        "case": "cell-unbalanced-reference",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "628af030ce10434f92157f77c2fd2dc14a421769091ed4ac07db1e2362e2f95b",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "34d85323fdb1b9b8a968bfd2b8c2cb0cf375e5a9bdb7ade720531360ab13f6d0",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "bleed_heat_j": 0.0,
+        "final_soc_spread": 0.07999999999999996,
+        "initial_soc_spread": 0.08,
+        "max_energy_residual_j": 0.0
+      }
+    },
+    {
+      "archive": "cell-noisy-balancing/fields.npz",
+      "case": "cell-noisy-balancing",
+      "configuration": {
+        "case": "cell-noisy-balancing",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "a1ee28f9ccac27ed9bc7260babe29d2dfbc3d50121749488fd149487869490ed",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "f2035e77eb6ef23a164b0bd182cbf344dd7dece08b835db8c661f52b253cb895",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "bleed_heat_j": 2269.8935623240277,
+        "final_soc_spread": 0.010037547583183315,
+        "initial_soc_spread": 0.08,
+        "max_energy_residual_j": 9.940285505425485e-10
+      }
+    },
+    {
+      "archive": "weakest-cell-soc-cutoff/fields.npz",
+      "case": "weakest-cell-soc-cutoff",
+      "configuration": {
+        "case": "weakest-cell-soc-cutoff",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "118a7ed937215c3fd5faf59d695264aed3137986741425590612223cbdb66f40",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "d68620ba836f620237649a75bf5790dd39b03d2fdc6bf195758f6cdf114deaf0",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "boundary": true,
+        "elapsed_s": 360.0,
+        "energy_residual_j": 7.784798071952537e-06
+      }
+    },
+    {
+      "archive": "cell-charge-soc-boundary/fields.npz",
+      "case": "cell-charge-soc-boundary",
+      "configuration": {
+        "case": "cell-charge-soc-boundary",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "80e64701eb70190c94d5e94bcaa84d462c49414da8147a58b82b16e755e80459",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "603822fe63f6b29a168524785e8b735ed7bc63ecda1fbddaaa2067d02435a8a9",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "boundary": true,
+        "elapsed_s": 22.799999999999645,
+        "energy_residual_j": -9.761901537785889e-06
+      }
+    },
+    {
+      "archive": "cell-capacity-identification/fields.npz",
+      "case": "cell-capacity-identification",
+      "configuration": {
+        "case": "cell-capacity-identification",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "5e317fbd925836daab7298d9d3d7cf0a9113d4fb6b27970d2a717310467f2605",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "974c7a0af7466d87469c2a3b8ceac9b18ce0913c0bb33aabcf8fd2fbf9223fd4",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "capacity_ah": 1.6507075583989355,
+        "charge_rmse_c": 5.734851553557286
+      }
+    },
+    {
+      "archive": "cell-pulse-identification/fields.npz",
+      "case": "cell-pulse-identification",
+      "configuration": {
+        "case": "cell-pulse-identification",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "3c2f2360e232733787d2fe76896c35c530f3a96acff36fc15cb4629ca6d96180",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "637d4a0c01d69135d10e8ac4e674a6abab41cb6439bcf8c49c4a56a4cdb041a0",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "ocv_v": 3.7501305891497823,
+        "resistance_ohm": 0.03507743957892655,
+        "resistance_std_ohm": 0.00016002509226855955
+      }
+    },
+    {
+      "archive": "relaxed-ocv-soc/fields.npz",
+      "case": "relaxed-ocv-soc",
+      "configuration": {
+        "case": "relaxed-ocv-soc",
+        "resolution_scale": 1,
+        "seed": 42
+      },
+      "provenance": {
+        "configuration_sha256": "8b8760c478bcbbefe5e975718acf7ceb7db6981e7d94825c2aad7569745d52fb",
+        "git_dirty": false,
+        "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.4",
+        "package_version": "0.1.0",
+        "parameters_sha256": "909accca92d75c0d793e983a8810104772e4cbef5a5bc9ba392d8fd600f3d8f1",
+        "python": "3.13.15",
+        "quantity_convention": "SI time-domain signals; peak amplitude-invariant d-q quantities; positive battery current discharges",
+        "scipy": "1.18.1"
+      },
+      "summary": {
+        "clipped_samples": 2,
+        "soc_rmse": 0.004631381629877477
       }
     }
   ],

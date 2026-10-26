@@ -1,7 +1,7 @@
 {
   "configuration_sha256": "a469dd12024d5142f4fde873b79d46176226545ca34f478ff2e9adbb1ea66489",
   "git_dirty": false,
-  "git_revision": "f76abf4e92fcad76f09c382695c29ff51b7d2a71",
+  "git_revision": "f89042618d0884ff741ae8772ede08dc1648c042",
   "matplotlib": "3.11.2",
   "numpy": "2.5.4",
   "package_version": "0.1.0",
