@@ -1,0 +1,36 @@
+{
+  "model_defaults": {
+    "motor": {
+      "current_limit_a": 250.0,
+      "flux_wb": 0.08,
+      "friction_nm_s": 0.001,
+      "inertia_kg_m2": 0.08,
+      "ld_h": 0.0003,
+      "lq_h": 0.0006,
+      "pole_pairs": 4,
+      "resistance_ohm": 0.04
+    },
+    "pack": {
+      "cell_c1_f": 30000.0,
+      "cell_capacity_ah": 50.0,
+      "cell_r0_ohm": 0.002,
+      "cell_r1_ohm": 0.001,
+      "maximum_cell_v": 4.25,
+      "minimum_cell_v": 2.8,
+      "parallel": 3,
+      "series": 96
+    },
+    "vehicle": {
+      "air_density": 1.225,
+      "drag_area_m2": 0.62,
+      "gear": 9.0,
+      "gear_efficiency": 0.96,
+      "mass_kg": 1800.0,
+      "motor_inertia": 0.08,
+      "rolling": 0.01,
+      "wheel_inertia": 4.0,
+      "wheel_radius_m": 0.31
+    }
+  },
+  "voltage_noise_std_v": 0.005
+}
